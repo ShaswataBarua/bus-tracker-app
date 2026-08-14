@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bus Tracker</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <style>
+      :root {
+        --blue-900: #0c4ea2;
+        --blue-700: #135fc5;
+        --bg: #f3f8ff;
+        --card: #ffffff;
+        --text: #1d2a36;
+        --muted: #4a5d70;
+        --green: #1cae66;
+        --stroke: #d7e7ff;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #edf5ff;
+        color: var(--text);
+      }
+
+      .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px 16px 32px;
+      }
+
+      .topbar {
+        background: linear-gradient(135deg, var(--blue-900), var(--blue-700));
+        color: white;
+        border-radius: 16px;
+        padding: 18px 20px;
+        box-shadow: 0 10px 24px rgba(12, 78, 162, 0.16);
+      }
+
+      .topbar h1 {
+        margin: 0;
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+      }
+
+      .controls {
+        margin: 18px 0 14px;
+        background: var(--card);
+        border: 1px solid var(--stroke);
+        border-radius: 12px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .controls label {
+        font-weight: 700;
+        color: var(--blue-900);
+      }
+
+      select {
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--stroke);
+        min-width: 180px;
+        font-size: 1rem;
+        background: white;
+        color: var(--text);
+      }
+
+      .map-wrap {
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid var(--stroke);
+        box-shadow: 0 10px 24px rgba(12, 78, 162, 0.12);
+      }
+
+      #map {
+        height: 70vh;
+        min-height: 420px;
+        width: 100%;
+        background: #eaf4ff;
+      }
+
+      .status {
+        margin-top: 14px;
+        padding: 10px 14px;
+        background: #edf5ff;
+        border: 1px solid var(--stroke);
+        border-radius: 10px;
+        color: var(--blue-900);
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="topbar">
+        <h1>Bus Live Tracking</h1>
+      </div>
+
+      <div class="controls">
+        <label for="routeSelect">Select route:</label>
+        <select id="routeSelect">
+          <option value="route1">Route 1</option>
+          <option value="route2">Route 2</option>
+          <option value="route3">Route 3</option>
+          <option value="route4">Route 4</option>
+        </select>
+      </div>
+
+      <div class="map-wrap">
+        <div id="map"></div>
+      </div>
+
+      <div class="status" id="statusText">Waiting for live bus location...</div>
+    </div>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <script type="module">
+      // Placeholder: replace with your Firebase config
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+      };
+
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+      const routeSelect = document.getElementById('routeSelect');
+      const statusText = document.getElementById('statusText');
+
+      const map = L.map('map').setView([22.364, 91.812], 13);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      const marker = L.marker([22.364, 91.812]).addTo(map);
+      const routeIcons = {
+        route1: '🚍',
+        route2: '🚌',
+        route3: '🚐',
+        route4: '🛺'
+      };
+
+      const defaultCenter = [22.364, 91.812];
+      let currentRoute = 'route1';
+      let firebaseDb = null;
+      let refreshTimer = null;
+
+      function updateStatus(message) {
+        statusText.textContent = message;
+      }
+
+      function updateMarker(lat, lng, routeKey) {
+        const position = [lat, lng];
+        marker.setLatLng(position);
+        marker.bindPopup(`${routeIcons[routeKey] || '🚍'} ${routeKey.toUpperCase()}`);
+        map.setView(position, Math.max(map.getZoom(), 13));
+      }
+
+      async function fetchRouteLocation(routeKey) {
+        if (!firebaseDb) {
+          updateStatus('Firebase is not initialized yet.');
+          return;
+        }
+
+        try {
+          const snapshot = await get(ref(firebaseDb, `busLocation/${routeKey}`));
+          const data = snapshot.val();
+
+          if (!data || data.latitude === undefined || data.longitude === undefined) {
+            updateStatus(`No live data for ${routeKey}.`);
+            return;
+          }
+
+          const lat = Number(data.latitude);
+          const lng = Number(data.longitude);
+          updateMarker(lat, lng, routeKey);
+          updateStatus(`Tracking ${routeKey} • Updated: ${new Date(data.updatedAt || Date.now()).toLocaleTimeString()}`);
+        } catch (error) {
+          console.error('Firebase fetch error:', error);
+          updateStatus(`Unable to load location for ${routeKey}.`);
+        }
+      }
+
+      function startAutoRefresh() {
+        if (refreshTimer) clearInterval(refreshTimer);
+
+        refreshTimer = setInterval(() => {
+          fetchRouteLocation(currentRoute);
+        }, 10000);
+      }
+
+      routeSelect.addEventListener('change', (event) => {
+        currentRoute = event.target.value;
+        fetchRouteLocation(currentRoute);
+      });
+
+      const app = initializeApp(firebaseConfig);
+      firebaseDb = getDatabase(app);
+
+      routeSelect.value = currentRoute;
+      fetchRouteLocation(currentRoute);
+      startAutoRefresh();
+
+      map.setView(defaultCenter, 13);
+      marker.bindPopup('Route 1');
+    </script>
+  </body>
+</html>

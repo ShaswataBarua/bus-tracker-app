@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bus Routes | BGC Biydha Nagar</title>
+    <style>
+      :root {
+        --blue-900: #0c4ea2;
+        --blue-700: #135fc5;
+        --blue-100: #edf5ff;
+        --green-500: #1cae66;
+        --green-600: #149b57;
+        --text-900: #1d2a36;
+        --text-700: #4a5d70;
+        --card-bg: #ffffff;
+        --stroke: #d7e7ff;
+        --shadow: 0 10px 24px rgba(12, 78, 162, 0.14);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, #f2f7ff 0%, #eef6ff 100%);
+        color: var(--text-900);
+      }
+
+      .page {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 18px 16px 42px;
+      }
+
+      .header {
+        background: linear-gradient(135deg, var(--blue-900), var(--blue-700));
+        color: white;
+        padding: 18px 20px 22px;
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        text-align: center;
+      }
+
+      .eyebrow {
+        letter-spacing: 0.12em;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        opacity: 0.85;
+      }
+
+      h1 {
+        margin: 8px 0 0;
+        font-size: clamp(1.7rem, 5vw, 2.4rem);
+      }
+
+      .tabs {
+        display: flex;
+        overflow-x: auto;
+        gap: 10px;
+        margin: 20px 0 8px;
+        padding: 6px 4px;
+        scrollbar-width: none;
+      }
+
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab-btn {
+        flex: 1 0 160px;
+        border: 1px solid var(--stroke);
+        background: white;
+        color: var(--blue-900);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 0.98rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(12, 78, 162, 0.06);
+      }
+
+      .tab-btn.active {
+        background: var(--blue-900);
+        color: white;
+        border-color: var(--blue-900);
+      }
+
+      .panel {
+        display: none;
+        background: var(--card-bg);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--stroke);
+        padding: 18px 18px 10px;
+      }
+
+      .panel.active {
+        display: block;
+      }
+
+      .route-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+
+      .route-name {
+        font-size: clamp(1.2rem, 4vw, 1.7rem);
+        margin: 0;
+        color: var(--text-900);
+      }
+
+      .route-tag {
+        background: var(--blue-100);
+        color: var(--blue-900);
+        border-radius: 999px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        padding: 8px 12px;
+      }
+
+      .stops {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 18px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .stops li {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        background: #f7faff;
+        border-radius: 12px;
+        border: 1px solid var(--stroke);
+        line-height: 1.4;
+      }
+
+      .stop-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--green-500);
+        flex-shrink: 0;
+        box-shadow: 0 0 0 4px rgba(28, 174, 102, 0.12);
+      }
+
+      .stop-arrow {
+        color: var(--blue-700);
+        font-weight: 700;
+        margin-left: auto;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--stroke);
+        border-radius: 14px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 260px;
+      }
+
+      th, td {
+        padding: 12px 14px;
+        text-align: left;
+        border-bottom: 1px solid #e7efff;
+      }
+
+      th {
+        background: var(--blue-100);
+        color: var(--blue-900);
+        font-size: 0.82rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      td {
+        background: white;
+      }
+
+      tr:last-child td { border-bottom: none; }
+
+      .live-btn-wrap {
+        display: flex;
+        justify-content: center;
+        margin-top: 28px;
+      }
+
+      .live-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 28px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--green-500), var(--green-600));
+        color: white;
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow: 0 10px 20px rgba(28, 174, 102, 0.25);
+        border: none;
+      }
+
+      @media (max-width: 560px) {
+        .page {
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+
+        .header {
+          padding-left: 14px;
+          padding-right: 14px;
+        }
+
+        .route-header {
+          align-items: flex-start;
+        }
+
+        .tab-btn {
+          flex-basis: 150px;
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <div class="eyebrow">Campus shuttle</div>
+        <h1>Bus Routes to BGC Biydha Nagar</h1>
+      </header>
+
+      <nav class="tabs" aria-label="Bus route tabs">
+        <button class="tab-btn active" type="button" data-tab="route1">Route 1</button>
+        <button class="tab-btn" type="button" data-tab="route2">Route 2</button>
+        <button class="tab-btn" type="button" data-tab="route3">Route 3</button>
+        <button class="tab-btn" type="button" data-tab="route4">Route 4</button>
+      </nav>
+
+      <section class="panel active" id="route1">
+        <div class="route-header">
+          <h2 class="route-name">Route 1 (Road 1)</h2>
+          <span class="route-tag">Ends at BGC Biydha Nagar</span>
+        </div>
+        <ul class="stops">
+          <li><span class="stop-dot"></span> GEC <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> 2No Gate <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Muradpur <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Chandgaon Thana <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Access Road <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Tulatoli <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> New Bridge <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Moizzartek <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Shantirhut <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Badamtol <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Bypass Road <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Komol Munshir Hut <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> BGC Biydha Nagar (campus)</li>
+        </ul>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Departure from campus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>7:00 AM</td></tr>
+              <tr><td>10:00 AM</td></tr>
+              <tr><td>1:00 PM</td></tr>
+              <tr><td>4:00 PM</td></tr>
+              <tr><td>6:30 PM</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="route2">
+        <div class="route-header">
+          <h2 class="route-name">Route 2 (Road 2)</h2>
+          <span class="route-tag">Ends at BGC Biydha Nagar</span>
+        </div>
+        <ul class="stops">
+          <li><span class="stop-dot"></span> Oxygen <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Muradpur <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Chandgaon Thana <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Access Road <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Tulatoli <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> New Bridge <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Moizzartek <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Shantirhut <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Badamtol <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Bypass Road <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Komol Munshir Hut <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> BGC Biydha Nagar (campus)</li>
+        </ul>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Departure from campus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>7:00 AM</td></tr>
+              <tr><td>10:00 AM</td></tr>
+              <tr><td>1:00 PM</td></tr>
+              <tr><td>4:00 PM</td></tr>
+              <tr><td>6:30 PM</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="route3">
+        <div class="route-header">
+          <h2 class="route-name">Route 3 (Road 3)</h2>
+          <span class="route-tag">Ends at BGC Biydha Nagar</span>
+        </div>
+        <ul class="stops">
+          <li><span class="stop-dot"></span> Agrabad <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Newmarket <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Kotoyali <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Newbridge <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Moizzartek <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Shantirhut <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Badamtol <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Bypass Road <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Komol Munshir Hut <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> BGC Biydha Nagar (campus)</li>
+        </ul>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Departure from campus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>7:00 AM</td></tr>
+              <tr><td>10:00 AM</td></tr>
+              <tr><td>1:00 PM</td></tr>
+              <tr><td>4:00 PM</td></tr>
+              <tr><td>6:30 PM</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="route4">
+        <div class="route-header">
+          <h2 class="route-name">Route 4 (Road 4)</h2>
+          <span class="route-tag">Ends at BGC Biydha Nagar</span>
+        </div>
+        <ul class="stops">
+          <li><span class="stop-dot"></span> Anayet Bazar <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> DC Hill <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Kotuyali <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> New Bridge <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Moizzartek <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Shantirhut <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Badamtol <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Bypass Road <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> Komol Munshir Hut <span class="stop-arrow">→</span></li>
+          <li><span class="stop-dot"></span> BGC Biydha Nagar (campus)</li>
+        </ul>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Departure from campus</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>7:00 AM</td></tr>
+              <tr><td>10:00 AM</td></tr>
+              <tr><td>1:00 PM</td></tr>
+              <tr><td>4:00 PM</td></tr>
+              <tr><td>6:30 PM</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="live-btn-wrap">
+        <a class="live-btn" href="track.html">Live Track</a>
+      </div>
+    </div>
+
+    <script>
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const panels = document.querySelectorAll('.panel');
+
+      tabButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const target = button.dataset.tab;
+
+          tabButtons.forEach((btn) => btn.classList.toggle('active', btn === button));
+          panels.forEach((panel) => panel.classList.toggle('active', panel.id === target));
+        });
+      });
+    </script>
+  </body>
+</html>
