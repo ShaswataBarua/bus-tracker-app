@@ -133,19 +133,21 @@
     ></script>
 
     <script type="module">
-      // Placeholder: replace with your Firebase config
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
       const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT.firebaseapp.com",
-        databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT.appspot.com",
-        messagingSenderId: "YOUR_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyAynPmLrkqPKD5VHd1HY2vt-bq5xmJ9fuc",
+        authDomain: "bus-tracker-11b51.firebaseapp.com",
+        databaseURL: "https://bus-tracker-11b51-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "bus-tracker-11b51",
+        storageBucket: "bus-tracker-11b51.firebasestorage.app",
+        messagingSenderId: "28373051420",
+        appId: "1:28373051420:web:da11dd98ec4249b31697d9"
       };
 
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-      import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
 
       const routeSelect = document.getElementById('routeSelect');
       const statusText = document.getElementById('statusText');
@@ -165,8 +167,7 @@
 
       const defaultCenter = [22.364, 91.812];
       let currentRoute = 'route1';
-      let firebaseDb = null;
-      let refreshTimer = null;
+      let activeUnsubscribe = null;
 
       function updateStatus(message) {
         statusText.textContent = message;
@@ -179,14 +180,13 @@
         map.setView(position, Math.max(map.getZoom(), 13));
       }
 
-      async function fetchRouteLocation(routeKey) {
-        if (!firebaseDb) {
-          updateStatus('Firebase is not initialized yet.');
-          return;
+      function listenToRoute(routeKey) {
+        if (activeUnsubscribe) {
+          activeUnsubscribe();
         }
 
-        try {
-          const snapshot = await get(ref(firebaseDb, `busLocation/${routeKey}`));
+        const routeRef = ref(db, `busLocation/${routeKey}`);
+        activeUnsubscribe = onValue(routeRef, (snapshot) => {
           const data = snapshot.val();
 
           if (!data || data.latitude === undefined || data.longitude === undefined) {
@@ -198,32 +198,19 @@
           const lng = Number(data.longitude);
           updateMarker(lat, lng, routeKey);
           updateStatus(`Tracking ${routeKey} • Updated: ${new Date(data.updatedAt || Date.now()).toLocaleTimeString()}`);
-        } catch (error) {
-          console.error('Firebase fetch error:', error);
-          updateStatus(`Unable to load location for ${routeKey}.`);
-        }
-      }
-
-      function startAutoRefresh() {
-        if (refreshTimer) clearInterval(refreshTimer);
-
-        refreshTimer = setInterval(() => {
-          fetchRouteLocation(currentRoute);
-        }, 10000);
+        }, (error) => {
+          console.error('Firebase listener error:', error);
+          updateStatus(`Unable to watch ${routeKey}.`);
+        });
       }
 
       routeSelect.addEventListener('change', (event) => {
         currentRoute = event.target.value;
-        fetchRouteLocation(currentRoute);
+        listenToRoute(currentRoute);
       });
 
-      const app = initializeApp(firebaseConfig);
-      firebaseDb = getDatabase(app);
-
       routeSelect.value = currentRoute;
-      fetchRouteLocation(currentRoute);
-      startAutoRefresh();
-
+      listenToRoute(currentRoute);
       map.setView(defaultCenter, 13);
       marker.bindPopup('Route 1');
     </script>
