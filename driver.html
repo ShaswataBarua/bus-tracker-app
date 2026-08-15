@@ -689,7 +689,7 @@
       let currentDriverName = '';
       let pendingRouteKey = null;
       let lastKnownPosition = { latitude: null, longitude: null, accuracy: null };
-      const navStack = [];
+      let screenStack = ['selectBus'];
 
       const routeScreen = document.getElementById('routeScreen');
       const shareScreen = document.getElementById('shareScreen');
@@ -771,10 +771,10 @@
       function showRouteSelection() {
         routeScreen.hidden = false;
         shareScreen.hidden = true;
-        if (navStack[navStack.length - 1] !== 'routes') {
-          navStack.push('routes');
+        if (screenStack[screenStack.length - 1] !== 'selectBus') {
+          screenStack = screenStack.filter((screen) => screen !== 'selectBus');
+          screenStack.push('selectBus');
         }
-        window.history.pushState({ screen: 'routes' }, '', '#routes');
       }
 
       function showSharingScreen(routeKey) {
@@ -793,31 +793,28 @@
         routeScreen.hidden = true;
         shareScreen.hidden = false;
         setStatus(`You are driving ${info.label}`, true, false);
-        if (navStack[navStack.length - 1] !== 'share') {
-          navStack.push('share');
+
+        if (screenStack[screenStack.length - 1] !== 'driverShare') {
+          screenStack.push('driverShare');
         }
-        window.history.pushState({ screen: 'share', routeKey }, '', `#${routeKey}`);
       }
 
       function navigateBack() {
-        const currentScreen = navStack[navStack.length - 1];
+        const currentScreen = screenStack[screenStack.length - 1];
 
-        if (currentScreen === 'share') {
-          navStack.pop();
+        if (currentScreen === 'driverShare') {
+          stopSharing();
+          screenStack.pop();
           showRouteSelection();
           return;
         }
 
-        if (currentScreen === 'routes') {
+        if (currentScreen === 'selectBus') {
           window.location.href = 'login.html';
           return;
         }
 
-        if (document.referrer && document.referrer.includes('login.html')) {
-          window.history.back();
-        } else {
-          window.location.href = 'login.html';
-        }
+        window.location.href = 'login.html';
       }
 
       function handleAssignmentConfirm() {
@@ -979,6 +976,10 @@
           });
         }
 
+        if (intervalId !== null) {
+          clearInterval(intervalId);
+        }
+
         intervalId = setInterval(() => {
           if (!isSharing) return;
           if (window.Capacitor && window.Capacitor.isNativePlatform()) {
@@ -1053,6 +1054,9 @@
         }
         stopSharing();
         currentDriverName = '';
+        if (screenStack[screenStack.length - 1] === 'driverShare') {
+          screenStack.pop();
+        }
         showRouteSelection();
       });
 
@@ -1062,8 +1066,8 @@
 
       shareBackBtn.addEventListener('click', () => {
         stopSharing();
-        if (navStack[navStack.length - 1] === 'share') {
-          navStack.pop();
+        if (screenStack[screenStack.length - 1] === 'driverShare') {
+          screenStack.pop();
         }
         showRouteSelection();
       });
@@ -1094,23 +1098,6 @@
         setStatus('Location permission is required to share the bus location.', false, true);
       });
 
-      window.addEventListener('popstate', (event) => {
-        const state = event.state;
-        if (state && state.screen === 'share' && state.routeKey) {
-          selectedRoute = state.routeKey;
-          showSharingScreen(state.routeKey);
-          return;
-        }
-
-        if (state && state.screen === 'routes') {
-          stopSharing();
-          showRouteSelection();
-          return;
-        }
-
-        navigateBack();
-      });
-
       if (window.Capacitor && window.Capacitor.isNativePlatform()) {
         const { App } = window.Capacitor;
         App.addListener('backButton', () => {
@@ -1123,12 +1110,10 @@
         const latestAssignment = assignments[assignments.length - 1];
         selectedRoute = latestAssignment.routeKey;
         currentDriverName = latestAssignment.driverName || '';
-        navStack.length = 0;
-        navStack.push('routes', 'share');
+        screenStack = ['selectBus', 'driverShare'];
         showSharingScreen(selectedRoute);
       } else {
-        navStack.length = 0;
-        navStack.push('routes');
+        screenStack = ['selectBus'];
         showRouteSelection();
       }
     </script>
