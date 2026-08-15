@@ -645,6 +645,8 @@
           <strong>Stops</strong>
           <div class="stop-timeline">${items}</div>
         `;
+        container.style.visibility = 'visible';
+        container.style.opacity = '1';
       }
 
       function renderSchedule(routeKey, container) {
@@ -654,6 +656,8 @@
           <div class="schedule-row"><span class="schedule-icon" aria-hidden="true">🕐</span><span>${info.schedule}</span></div>
           <div class="schedule-row"><span class="schedule-icon" aria-hidden="true">🏫</span><span>Campus: BGC Trust University</span></div>
         `;
+        container.style.visibility = 'visible';
+        container.style.opacity = '1';
       }
 
       function renderRouteCards() {
@@ -662,9 +666,11 @@
           const stopsContainer = card.querySelector('.route-stop-list');
           const scheduleContainer = card.querySelector('.route-schedule');
           const timestampEl = card.querySelector('.timestamp strong');
-          timestampEl.textContent = routeMeta[routeKey].stops.join(' • ');
-          renderStops(routeKey, stopsContainer);
-          renderSchedule(routeKey, scheduleContainer);
+          if (stopsContainer && scheduleContainer && timestampEl) {
+            timestampEl.textContent = routeMeta[routeKey].stops.join(' • ');
+            renderStops(routeKey, stopsContainer);
+            renderSchedule(routeKey, scheduleContainer);
+          }
         });
       }
 
@@ -750,6 +756,7 @@
         if (screenStack[screenStack.length - 1] !== 'busCards') {
           screenStack.push('busCards');
         }
+        renderRouteCards();
         showScreen('busCards');
       }
 
