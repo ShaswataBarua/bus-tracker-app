@@ -774,10 +774,16 @@
       }
 
       function showSharingScreen(routeKey) {
-        selectedRoute = routeKey;
         const info = routeMeta[routeKey];
+        if (!info) {
+          console.error('Attempted to show share screen for unknown route:', routeKey);
+          showRouteSelection();
+          return;
+        }
+
+        selectedRoute = routeKey;
         routeBadge.textContent = info.label;
-        assignmentTitle.textContent = currentDriverName ? `Driver: ${currentDriverName} • ${info.label}` : `You are driving ${info.label}`;
+        assignmentTitle.textContent = `You are driving ${info.label}`;
         routeScheduleText.textContent = info.schedule;
         renderStopTimeline(info.stops);
         routeScreen.hidden = true;
@@ -787,7 +793,13 @@
       }
 
       function handleAssignmentConfirm() {
+        const routeKey = pendingRouteKey;
         const value = driverNameInput.value.trim();
+        if (!routeKey) {
+          driverNameError.textContent = 'Please select a bus first.';
+          return;
+        }
+
         if (!value) {
           driverNameError.textContent = 'Please enter your name.';
           return;
@@ -795,15 +807,15 @@
 
         currentDriverName = value;
         const assignments = getAssignments();
-        const existing = assignments.some((assignment) => assignment.routeKey === pendingRouteKey && assignment.driverName.toLowerCase() === value.toLowerCase());
+        const existing = assignments.some((assignment) => assignment.routeKey === routeKey && assignment.driverName.toLowerCase() === value.toLowerCase());
 
         if (!existing) {
-          assignments.push({ routeKey: pendingRouteKey, driverName: value });
+          assignments.push({ routeKey, driverName: value });
           saveAssignments(assignments);
         }
 
         hideAssignmentModal();
-        showSharingScreen(pendingRouteKey);
+        showSharingScreen(routeKey);
       }
 
       function updateLocationDisplay(latitude, longitude) {
