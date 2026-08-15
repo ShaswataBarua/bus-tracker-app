@@ -727,42 +727,43 @@
         }
       }
 
-      let screenStack = ['routes'];
+      let screenStack = ['login'];
+
+      function showScreen(name) {
+        routeScreen.classList.toggle('hidden', name !== 'busCards');
+        mapScreen.hidden = name !== 'liveMap';
+      }
 
       function showMap(routeKey) {
         currentRoute = routeKey;
         const info = routeMeta[routeKey];
         mapTitle.textContent = info.title;
-        routeScreen.classList.add('hidden');
-        mapScreen.hidden = false;
         ensureMapVisible();
         listenToRoute(routeKey);
-        if (screenStack[screenStack.length - 1] !== 'map') {
-          screenStack.push('map');
+        if (screenStack[screenStack.length - 1] !== 'liveMap') {
+          screenStack.push('liveMap');
         }
+        showScreen('liveMap');
       }
 
       function showRouteList() {
-        routeScreen.classList.remove('hidden');
-        mapScreen.hidden = true;
-        if (screenStack[screenStack.length - 1] !== 'routes') {
-          screenStack.push('routes');
+        if (screenStack[screenStack.length - 1] !== 'busCards') {
+          screenStack.push('busCards');
         }
+        showScreen('busCards');
       }
 
-      function goBackOneStep() {
-        if (screenStack[screenStack.length - 1] === 'map') {
+      function goBack() {
+        if (screenStack.length > 1) {
           screenStack.pop();
-          showRouteList();
-          return;
-        }
-
-        if (screenStack.length <= 1) {
+          const prev = screenStack[screenStack.length - 1];
+          showScreen(prev);
+          if (prev === 'login') {
+            window.location.href = 'login.html';
+          }
+        } else {
           window.location.href = 'login.html';
-          return;
         }
-
-        window.location.href = 'login.html';
       }
 
       function listenToRoute(routeKey) {
@@ -808,19 +809,20 @@
       });
 
       backToRoutesBtn.addEventListener('click', () => {
-        goBackOneStep();
+        goBack();
       });
 
       if (window.Capacitor && window.Capacitor.isNativePlatform()) {
         const { App } = window.Capacitor;
         App.addListener('backButton', () => {
-          goBackOneStep();
+          goBack();
         });
       }
 
       map.setView(defaultCenter, 13);
       marker.bindPopup('Bus 1');
       renderRouteCards();
+      screenStack = ['login', 'busCards'];
       showRouteList();
     </script>
   </body>

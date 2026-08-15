@@ -689,7 +689,7 @@
       let currentDriverName = '';
       let pendingRouteKey = null;
       let lastKnownPosition = { latitude: null, longitude: null, accuracy: null };
-      let screenStack = ['selectBus'];
+      let screenStack = ['login'];
 
       const routeScreen = document.getElementById('routeScreen');
       const shareScreen = document.getElementById('shareScreen');
@@ -768,12 +768,21 @@
         `).join('');
       }
 
+      function showScreen(name) {
+        routeScreen.hidden = name !== 'selectBus';
+        shareScreen.hidden = name !== 'driverShare';
+
+        if (name === 'login') {
+          routeScreen.hidden = true;
+          shareScreen.hidden = true;
+        }
+      }
+
       function showRouteSelection() {
-        routeScreen.hidden = false;
-        shareScreen.hidden = true;
         if (screenStack[screenStack.length - 1] !== 'selectBus') {
           screenStack.push('selectBus');
         }
+        showScreen('selectBus');
       }
 
       function showSharingScreen(routeKey) {
@@ -789,28 +798,25 @@
         assignmentTitle.textContent = `You are driving ${info.label}`;
         routeScheduleText.textContent = info.schedule;
         renderStopTimeline(info.stops);
-        routeScreen.hidden = true;
-        shareScreen.hidden = false;
         setStatus(`You are driving ${info.label}`, true, false);
 
         if (screenStack[screenStack.length - 1] !== 'driverShare') {
           screenStack.push('driverShare');
         }
+        showScreen('driverShare');
       }
 
-      function goBackOneStep() {
-        if (screenStack[screenStack.length - 1] === 'driverShare') {
+      function goBack() {
+        if (screenStack.length > 1) {
           screenStack.pop();
-          showRouteSelection();
-          return;
-        }
-
-        if (screenStack.length <= 1) {
+          const prev = screenStack[screenStack.length - 1];
+          showScreen(prev);
+          if (prev === 'login') {
+            window.location.href = 'login.html';
+          }
+        } else {
           window.location.href = 'login.html';
-          return;
         }
-
-        window.location.href = 'login.html';
       }
 
       function handleAssignmentConfirm() {
@@ -1057,11 +1063,11 @@
       });
 
       routeBackBtn.addEventListener('click', () => {
-        goBackOneStep();
+        goBack();
       });
 
       shareBackBtn.addEventListener('click', () => {
-        goBackOneStep();
+        goBack();
       });
 
       confirmAssignmentBtn.addEventListener('click', handleAssignmentConfirm);
@@ -1093,7 +1099,7 @@
       if (window.Capacitor && window.Capacitor.isNativePlatform()) {
         const { App } = window.Capacitor;
         App.addListener('backButton', () => {
-          goBackOneStep();
+          goBack();
         });
       }
 
@@ -1102,10 +1108,10 @@
         const latestAssignment = assignments[assignments.length - 1];
         selectedRoute = latestAssignment.routeKey;
         currentDriverName = latestAssignment.driverName || '';
-        screenStack = ['selectBus', 'driverShare'];
+        screenStack = ['login', 'selectBus', 'driverShare'];
         showSharingScreen(selectedRoute);
       } else {
-        screenStack = ['selectBus'];
+        screenStack = ['login', 'selectBus'];
         showRouteSelection();
       }
     </script>
