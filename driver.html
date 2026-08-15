@@ -689,6 +689,7 @@
       let currentDriverName = '';
       let pendingRouteKey = null;
       let lastKnownPosition = { latitude: null, longitude: null, accuracy: null };
+      const navStack = [];
 
       const routeScreen = document.getElementById('routeScreen');
       const shareScreen = document.getElementById('shareScreen');
@@ -770,7 +771,10 @@
       function showRouteSelection() {
         routeScreen.hidden = false;
         shareScreen.hidden = true;
-        history.pushState({ screen: 'routes' }, '', '#routes');
+        if (navStack[navStack.length - 1] !== 'routes') {
+          navStack.push('routes');
+        }
+        window.history.pushState({ screen: 'routes' }, '', '#routes');
       }
 
       function showSharingScreen(routeKey) {
@@ -789,7 +793,31 @@
         routeScreen.hidden = true;
         shareScreen.hidden = false;
         setStatus(`You are driving ${info.label}`, true, false);
-        history.pushState({ screen: 'share', routeKey }, '', `#${routeKey}`);
+        if (navStack[navStack.length - 1] !== 'share') {
+          navStack.push('share');
+        }
+        window.history.pushState({ screen: 'share', routeKey }, '', `#${routeKey}`);
+      }
+
+      function navigateBack() {
+        const currentScreen = navStack[navStack.length - 1];
+
+        if (currentScreen === 'share') {
+          navStack.pop();
+          showRouteSelection();
+          return;
+        }
+
+        if (currentScreen === 'routes') {
+          window.location.href = 'login.html';
+          return;
+        }
+
+        if (document.referrer && document.referrer.includes('login.html')) {
+          window.history.back();
+        } else {
+          window.location.href = 'login.html';
+        }
       }
 
       function handleAssignmentConfirm() {
@@ -1029,11 +1057,14 @@
       });
 
       routeBackBtn.addEventListener('click', () => {
-        window.history.back();
+        navigateBack();
       });
 
       shareBackBtn.addEventListener('click', () => {
         stopSharing();
+        if (navStack[navStack.length - 1] === 'share') {
+          navStack.pop();
+        }
         showRouteSelection();
       });
 
@@ -1068,33 +1099,36 @@
         if (state && state.screen === 'share' && state.routeKey) {
           selectedRoute = state.routeKey;
           showSharingScreen(state.routeKey);
-        } else {
-          stopSharing();
-          routeScreen.hidden = false;
-          shareScreen.hidden = true;
+          return;
         }
+
+        if (state && state.screen === 'routes') {
+          stopSharing();
+          showRouteSelection();
+          return;
+        }
+
+        navigateBack();
       });
 
       if (window.Capacitor && window.Capacitor.isNativePlatform()) {
         const { App } = window.Capacitor;
-        App.addListener('backButton', ({ canGoBack }) => {
-          if (canGoBack) {
-            window.history.back();
-          } else {
-            stopSharing();
-            showRouteSelection();
-          }
+        App.addListener('backButton', () => {
+          navigateBack();
         });
       }
 
-      history.replaceState({ screen: 'routes' }, '', '#routes');
       const assignments = getAssignments();
       if (assignments.length > 0) {
         const latestAssignment = assignments[assignments.length - 1];
         selectedRoute = latestAssignment.routeKey;
         currentDriverName = latestAssignment.driverName || '';
+        navStack.length = 0;
+        navStack.push('routes', 'share');
         showSharingScreen(selectedRoute);
       } else {
+        navStack.length = 0;
+        navStack.push('routes');
         showRouteSelection();
       }
     </script>
