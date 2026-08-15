@@ -6,107 +6,280 @@
     <title>Driver Location Share</title>
     <style>
       :root {
-        --blue-900: #0c4ea2;
-        --blue-700: #135fc5;
-        --bg: #f3f8ff;
-        --card: #ffffff;
-        --text: #1d2a36;
-        --muted: #4a5d70;
-        --green: #1cae66;
-        --danger: #d94d4d;
-        --stroke: #d7e7ff;
+        --green-900: #0a5f3a;
+        --green-800: #0f6d42;
+        --green-700: #13824f;
+        --green-100: #ebfaf1;
+        --green-50: #f7fff9;
+        --white: #ffffff;
+        --text: #173127;
+        --muted: #5d7066;
+        --border: #d8ebdf;
+        --danger: #d6535a;
+        --shadow: 0 18px 42px rgba(10, 95, 58, 0.14);
       }
 
       * { box-sizing: border-box; }
 
-      body {
+      html, body {
         margin: 0;
+        min-height: 100%;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, #f2fbf6 0%, #eefaf3 100%);
+        color: var(--text);
+      }
+
+      body {
         min-height: 100vh;
         display: grid;
         place-items: center;
-        background: linear-gradient(180deg, #eef6ff, #f7fbff);
-        color: var(--text);
-        font-family: Arial, Helvetica, sans-serif;
+        padding: 20px 16px;
       }
 
-      .card {
-        width: min(92vw, 420px);
-        background: var(--card);
-        border: 1px solid var(--stroke);
-        border-radius: 18px;
-        box-shadow: 0 14px 32px rgba(12, 78, 162, 0.12);
-        padding: 24px 20px;
+      .app-shell {
+        width: min(100%, 980px);
       }
 
-      .title {
+      .screen {
+        width: min(100%, 460px);
+        margin: 0 auto;
+      }
+
+      .screen[hidden] {
+        display: none;
+      }
+
+      .container {
+        background: rgba(255,255,255,0.93);
+        border: 1px solid rgba(10, 95, 58, 0.12);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        padding: 24px 18px;
+      }
+
+      .topbar {
         text-align: center;
-        color: var(--blue-900);
-        margin: 0 0 18px;
-        font-size: clamp(1.5rem, 3vw, 2rem);
+        margin-bottom: 18px;
+      }
+
+      .topbar .eyebrow {
+        display: inline-block;
+        background: var(--green-100);
+        color: var(--green-800);
+        border-radius: 999px;
+        padding: 7px 10px;
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .topbar h1 {
+        margin: 12px 0 0;
+        font-size: clamp(1.8rem, 4vw, 2.4rem);
+      }
+
+      .route-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .route-card {
+        border: 1px solid var(--border);
+        background: var(--white);
+        border-radius: 18px;
+        padding: 18px 14px 16px;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: 0 12px 24px rgba(10, 95, 58, 0.07);
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .route-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(19, 130, 79, 0.24);
+        box-shadow: 0 18px 30px rgba(10, 95, 58, 0.08);
+      }
+
+      .route-card strong {
+        display: block;
+        font-size: 1.2rem;
+        margin-bottom: 8px;
+        color: var(--green-900);
+      }
+
+      .route-card small {
+        color: var(--muted);
+      }
+
+      .share-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .share-header h2 {
+        margin: 0;
+        font-size: clamp(1.4rem, 3vw, 2rem);
+      }
+
+      .badge {
+        background: var(--green-100);
+        color: var(--green-800);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
       }
 
       .status {
-        background: #edf5ff;
-        border: 1px solid var(--stroke);
-        border-radius: 12px;
+        background: #edf8f1;
+        border: 1px solid rgba(19, 130, 79, 0.12);
+        border-radius: 14px;
         padding: 14px 16px;
         text-align: center;
         font-weight: 700;
-        color: var(--blue-900);
-        margin-bottom: 20px;
+        color: var(--green-900);
+        margin-bottom: 18px;
       }
 
       .status.off {
+        background: #f5f8f6;
         color: var(--muted);
-        background: #f5f7fa;
+        border-color: var(--border);
+      }
+
+      .status.error {
+        background: #fff2f3;
+        color: #8f2f39;
+        border-color: rgba(214, 83, 90, 0.2);
       }
 
       .actions {
         display: flex;
-        gap: 12px;
-        justify-content: center;
+        gap: 10px;
+        margin-bottom: 14px;
       }
 
-      button {
+      .btn {
+        flex: 1;
         border: none;
-        border-radius: 999px;
-        padding: 12px 22px;
-        font-size: 1rem;
+        border-radius: 12px;
+        padding: 14px 14px;
+        font-size: 0.97rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .primary-btn {
+        background: linear-gradient(135deg, var(--green-700), var(--green-900));
+        color: var(--white);
+        box-shadow: 0 12px 18px rgba(10, 95, 58, 0.16);
+      }
+
+      .secondary-btn {
+        background: #f3f7f4;
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .danger-btn {
+        background: linear-gradient(135deg, #e35a66, var(--danger));
+        color: var(--white);
+      }
+
+      .note {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        text-align: center;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .link-btn {
+        border: none;
+        background: transparent;
+        color: var(--green-800);
+        font-size: 0.93rem;
         font-weight: 700;
         cursor: pointer;
       }
 
-      .start-btn {
-        background: var(--green);
-        color: white;
-      }
+      @media (max-width: 480px) {
+        .route-grid {
+          grid-template-columns: 1fr;
+        }
 
-      .stop-btn {
-        background: var(--danger);
-        color: white;
-      }
-
-      .note {
-        margin-top: 18px;
-        font-size: 0.9rem;
-        text-align: center;
-        color: var(--muted);
+        .actions {
+          flex-direction: column;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="card">
-      <h1 class="title">Driver Location</h1>
-      <div id="status" class="status off">Stopped</div>
+    <div class="app-shell">
+      <div class="screen" id="routeScreen">
+        <div class="container">
+          <div class="topbar">
+            <div class="eyebrow">Driver portal</div>
+            <h1>Select Route</h1>
+          </div>
 
-      <div class="actions">
-        <button class="start-btn" id="startBtn" type="button">Start Sharing</button>
-        <button class="stop-btn" id="stopBtn" type="button">Stop</button>
+          <div class="route-grid">
+            <button class="route-card" type="button" data-route="route1">
+              <strong>Route 1</strong>
+              <small>Road 1</small>
+            </button>
+            <button class="route-card" type="button" data-route="route2">
+              <strong>Route 2</strong>
+              <small>Road 2</small>
+            </button>
+            <button class="route-card" type="button" data-route="route3">
+              <strong>Route 3</strong>
+              <small>Road 3</small>
+            </button>
+            <button class="route-card" type="button" data-route="route4">
+              <strong>Route 4</strong>
+              <small>Road 4</small>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="note">Location is shared every 10 seconds to Firebase.</div>
-      <div class="note">
-        <a href="./index.html">Routes</a> · <a href="./track.html">Live track</a>
+      <div class="screen" id="shareScreen" hidden>
+        <div class="container">
+          <div class="share-header">
+            <h2>Driver Share</h2>
+            <span class="badge" id="selectedRouteBadge">Route 1</span>
+          </div>
+
+          <div id="status" class="status off">Stopped</div>
+
+          <div class="actions">
+            <button class="btn primary-btn" id="startBtn" type="button">Start Sharing</button>
+            <button class="btn danger-btn" id="stopBtn" type="button">Stop</button>
+          </div>
+
+          <div class="actions">
+            <button class="btn secondary-btn" id="changeRouteBtn" type="button">Change Route</button>
+          </div>
+
+          <div class="note">Location is shared every 10 seconds to Firebase for the selected route.</div>
+          <div class="note">
+            <button type="button" class="link-btn" id="backToRoutesBtn">Back to route select</button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -130,14 +303,37 @@
       let watchId = null;
       let intervalId = null;
       let isSharing = false;
+      let selectedRoute = 'route1';
 
+      const routeScreen = document.getElementById('routeScreen');
+      const shareScreen = document.getElementById('shareScreen');
       const statusEl = document.getElementById('status');
       const startBtn = document.getElementById('startBtn');
       const stopBtn = document.getElementById('stopBtn');
+      const changeRouteBtn = document.getElementById('changeRouteBtn');
+      const backToRoutesBtn = document.getElementById('backToRoutesBtn');
+      const routeCards = document.querySelectorAll('.route-card');
+      const routeBadge = document.getElementById('selectedRouteBadge');
 
-      function setStatus(message, active = false) {
+      function showRouteSelection() {
+        routeScreen.hidden = false;
+        shareScreen.hidden = true;
+        history.pushState({ screen: 'routes' }, '', '#routes');
+      }
+
+      function showSharingScreen(routeKey) {
+        selectedRoute = routeKey;
+        routeBadge.textContent = `Route ${routeKey.replace('route', '')}`;
+        routeScreen.hidden = true;
+        shareScreen.hidden = false;
+        setStatus(`Ready to share ${routeBadge.textContent}`, false);
+        history.pushState({ screen: 'share', routeKey }, '', `#${routeKey}`);
+      }
+
+      function setStatus(message, active = false, isError = false) {
         statusEl.textContent = message;
         statusEl.classList.toggle('off', !active);
+        statusEl.classList.toggle('error', isError);
       }
 
       async function sendLocationToFirebase(lat, lng, accuracy) {
@@ -149,8 +345,8 @@
         };
 
         try {
-          await set(ref(db, 'busLocation/route1'), locationData);
-          console.log('Location saved to Firebase');
+          await set(ref(db, `busLocation/${selectedRoute}`), locationData);
+          console.log(`Location saved to Firebase for ${selectedRoute}`);
         } catch (error) {
           console.error('Error saving location:', error);
         }
@@ -163,17 +359,23 @@
 
       function handleError(error) {
         console.error('Geolocation error:', error);
-        setStatus('Location access denied', false);
+
+        if (error && (error.code === 1 || error.code === 2 || error.code === 3)) {
+          setStatus('Location permission denied. Please enable GPS/location access in your device settings and try again.', false, true);
+          return;
+        }
+
+        setStatus('Unable to access location. Please try again.', false, true);
       }
 
       function startSharing() {
         if (!navigator.geolocation) {
-          setStatus('Geolocation is not supported', false);
+          setStatus('Geolocation is not supported on this device.', false, true);
           return;
         }
 
         isSharing = true;
-        setStatus('Sharing location...', true);
+        setStatus(`Sharing ${routeBadge.textContent}...`, true);
 
         watchId = navigator.geolocation.watchPosition(handleLocation, handleError, {
           enableHighAccuracy: true,
@@ -208,8 +410,45 @@
         setStatus('Stopped', false);
       }
 
+      routeCards.forEach((card) => {
+        card.addEventListener('click', () => {
+          showSharingScreen(card.dataset.route);
+        });
+      });
+
       startBtn.addEventListener('click', startSharing);
       stopBtn.addEventListener('click', stopSharing);
+      changeRouteBtn.addEventListener('click', () => {
+        stopSharing();
+        showRouteSelection();
+      });
+      backToRoutesBtn.addEventListener('click', () => {
+        stopSharing();
+        showRouteSelection();
+      });
+
+      window.addEventListener('popstate', (event) => {
+        const state = event.state;
+        if (state && state.screen === 'share' && state.routeKey) {
+          showSharingScreen(state.routeKey);
+        } else {
+          stopSharing();
+          routeScreen.hidden = false;
+          shareScreen.hidden = true;
+        }
+      });
+
+      if (window.Capacitor && window.Capacitor.isNativePlatform()) {
+        const { App } = window.Capacitor;
+        App.addListener('backButton', ({ canGoBack }) => {
+          if (canGoBack) {
+            window.history.back();
+          }
+        });
+      }
+
+      history.replaceState({ screen: 'routes' }, '', '#routes');
+      showRouteSelection();
     </script>
   </body>
 </html>
