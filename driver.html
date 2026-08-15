@@ -872,10 +872,10 @@
           const prev = screenStack[screenStack.length - 1];
           showScreen(prev);
           if (prev === 'login') {
-            window.location.href = 'login.html';
+            window.history.back();
           }
         } else {
-          window.location.href = 'login.html';
+          window.history.back();
         }
       }
 
