@@ -23,6 +23,7 @@
         --border: #d9ebdf;
         --shadow: 0 18px 40px rgba(10, 95, 58, 0.12);
         --card-shadow: 0 12px 24px rgba(16, 96, 64, 0.1);
+        --danger: #d14f5a;
       }
 
       * { box-sizing: border-box; }
@@ -128,23 +129,136 @@
       .route-stop-list,
       .route-schedule {
         margin-top: 12px;
-        padding: 10px 12px;
-        border-radius: 12px;
+        padding: 12px;
+        border-radius: 14px;
         background: #f8fffa;
         border: 1px solid rgba(19, 130, 79, 0.12);
         color: var(--text);
-        line-height: 1.5;
         font-size: 0.84rem;
       }
 
       .route-stop-list strong,
       .route-schedule strong {
         display: block;
-        margin-bottom: 4px;
+        margin-bottom: 8px;
         font-size: 0.72rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--green-900);
+      }
+
+      .stop-timeline {
+        position: relative;
+        margin: 0;
+        padding-left: 14px;
+      }
+
+      .stop-timeline::before {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        bottom: 4px;
+        width: 2px;
+        background: linear-gradient(180deg, rgba(19,130,79,0.35), rgba(19,130,79,0.12));
+      }
+
+      .stop-step {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 4px 0 8px;
+        color: var(--text);
+      }
+
+      .stop-step.is-last {
+        padding-bottom: 0;
+      }
+
+      .stop-dot {
+        position: relative;
+        z-index: 1;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--green-700);
+        border: 2px solid var(--white);
+        box-shadow: 0 0 0 4px rgba(19, 130, 79, 0.12);
+        margin-top: 4px;
+        flex-shrink: 0;
+      }
+
+      .stop-label {
+        line-height: 1.5;
+      }
+
+      .schedule-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        line-height: 1.5;
+        margin-top: 6px;
+        color: var(--text);
+      }
+
+      .schedule-icon {
+        font-size: 1rem;
+      }
+
+      .driver-meta {
+        margin-top: 12px;
+        padding: 12px 14px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #f5fff8 0%, #ecfaf2 100%);
+        border: 1px solid rgba(19, 130, 79, 0.1);
+      }
+
+      .driver-status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: var(--green-900);
+      }
+
+      .driver-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #a4aeb6;
+      }
+
+      .driver-dot.live {
+        background: #2ecb75;
+        box-shadow: 0 0 0 6px rgba(46, 203, 117, 0.15);
+        animation: pulse 1.8s infinite ease-in-out;
+      }
+
+      .driver-status-text {
+        line-height: 1.4;
+      }
+
+      .driver-updated {
+        display: block;
+        margin-top: 8px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      .route-card.is-offline .driver-status-text {
+        color: var(--muted);
+      }
+
+      .route-card.is-offline .driver-dot {
+        background: #b4c0ba;
+        box-shadow: none;
+      }
+
+      .route-card.is-offline .driver-status {
+        color: var(--muted);
       }
 
       .timestamp {
@@ -243,6 +357,18 @@
         font-size: clamp(1.6rem, 3vw, 2.3rem);
       }
 
+      .map-driver-meta {
+        margin-top: 10px;
+        font-weight: 700;
+        color: var(--green-800);
+        background: #f2fff7;
+        border: 1px solid rgba(19,130,79,0.12);
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 10px;
+      }
+
       .map-status {
         display: flex;
         align-items: center;
@@ -316,17 +442,18 @@
             <span class="route-badge">BUS 1</span>
             <h3>Bus 1</h3>
             <p class="route-name">Campus shuttle route</p>
-            <div class="route-stop-list">
-              <strong>Stops</strong>
-              GEC → 2 No Gate → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
-            </div>
-            <div class="route-schedule">
-              <strong>Schedule</strong>
-              Leaves 8:15 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+            <div class="route-stop-list"></div>
+            <div class="route-schedule"></div>
+            <div class="driver-meta">
+              <div class="driver-status">
+                <span class="driver-dot" aria-hidden="true"></span>
+                <span class="driver-status-text">No driver assigned</span>
+              </div>
+              <small class="driver-updated" hidden></small>
             </div>
             <div class="timestamp">
               <span class="live-dot"></span>
-              <strong id="time-route1">GEC → 2 No Gate → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar</strong>
+              <strong id="time-route1">Route timeline</strong>
             </div>
             <span class="live-btn">Live Map</span>
           </button>
@@ -335,17 +462,18 @@
             <span class="route-badge">BUS 2</span>
             <h3>Bus 2</h3>
             <p class="route-name">Campus shuttle route</p>
-            <div class="route-stop-list">
-              <strong>Stops</strong>
-              Oxygen → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
-            </div>
-            <div class="route-schedule">
-              <strong>Schedule</strong>
-              Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+            <div class="route-stop-list"></div>
+            <div class="route-schedule"></div>
+            <div class="driver-meta">
+              <div class="driver-status">
+                <span class="driver-dot" aria-hidden="true"></span>
+                <span class="driver-status-text">No driver assigned</span>
+              </div>
+              <small class="driver-updated" hidden></small>
             </div>
             <div class="timestamp">
               <span class="live-dot"></span>
-              <strong id="time-route2">Oxygen → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar</strong>
+              <strong id="time-route2">Route timeline</strong>
             </div>
             <span class="live-btn">Live Map</span>
           </button>
@@ -354,17 +482,18 @@
             <span class="route-badge">BUS 3</span>
             <h3>Bus 3</h3>
             <p class="route-name">Campus shuttle route</p>
-            <div class="route-stop-list">
-              <strong>Stops</strong>
-              Agrabad → Newmarket → Kotoyali → Newbridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
-            </div>
-            <div class="route-schedule">
-              <strong>Schedule</strong>
-              Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+            <div class="route-stop-list"></div>
+            <div class="route-schedule"></div>
+            <div class="driver-meta">
+              <div class="driver-status">
+                <span class="driver-dot" aria-hidden="true"></span>
+                <span class="driver-status-text">No driver assigned</span>
+              </div>
+              <small class="driver-updated" hidden></small>
             </div>
             <div class="timestamp">
               <span class="live-dot"></span>
-              <strong id="time-route3">Agrabad → Newmarket → Kotoyali → Newbridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar</strong>
+              <strong id="time-route3">Route timeline</strong>
             </div>
             <span class="live-btn">Live Map</span>
           </button>
@@ -373,17 +502,18 @@
             <span class="route-badge">BUS 4</span>
             <h3>Bus 4</h3>
             <p class="route-name">Campus shuttle route</p>
-            <div class="route-stop-list">
-              <strong>Stops</strong>
-              Anayet bazar → DC hill → Kotuyali → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
-            </div>
-            <div class="route-schedule">
-              <strong>Schedule</strong>
-              Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+            <div class="route-stop-list"></div>
+            <div class="route-schedule"></div>
+            <div class="driver-meta">
+              <div class="driver-status">
+                <span class="driver-dot" aria-hidden="true"></span>
+                <span class="driver-status-text">No driver assigned</span>
+              </div>
+              <small class="driver-updated" hidden></small>
             </div>
             <div class="timestamp">
               <span class="live-dot"></span>
-              <strong id="time-route4">Anayet bazar → DC hill → Kotuyali → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar</strong>
+              <strong id="time-route4">Route timeline</strong>
             </div>
             <span class="live-btn">Live Map</span>
           </button>
@@ -398,6 +528,7 @@
         <div class="map-header">
           <span class="eyebrow">Live tracking</span>
           <h2 id="mapTitle">Bus 1</h2>
+          <div class="map-driver-meta" id="mapDriverMeta">Driver: unavailable</div>
         </div>
 
         <div class="map-status">
@@ -444,28 +575,28 @@
           title: 'Bus 1',
           routeName: 'Campus shuttle route',
           timeId: 'time-route1',
-          stops: 'GEC → 2 No Gate → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          stops: ['GEC', '2 No Gate', 'Muradpur', 'Chandgaon Thana', 'Access Road', 'Tulatoli', 'New bridge', 'Moizzartek', 'Shantirhut', 'Badamtol', 'Bypass road', 'Komol munshir hut', 'BGC Biydha Nagar'],
           schedule: 'Leaves 8:15 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
         },
         route2: {
           title: 'Bus 2',
           routeName: 'Campus shuttle route',
           timeId: 'time-route2',
-          stops: 'Oxygen → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          stops: ['Oxygen', 'Muradpur', 'Chandgaon Thana', 'Access Road', 'Tulatoli', 'New bridge', 'Moizzartek', 'Shantirhut', 'Badamtol', 'Bypass road', 'Komol munshir hut', 'BGC Biydha Nagar'],
           schedule: 'Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
         },
         route3: {
           title: 'Bus 3',
           routeName: 'Campus shuttle route',
           timeId: 'time-route3',
-          stops: 'Agrabad → Newmarket → Kotoyali → Newbridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          stops: ['Agrabad', 'Newmarket', 'Kotoyali', 'Newbridge', 'Moizzartek', 'Shantirhut', 'Badamtol', 'Bypass road', 'Komol munshir hut', 'BGC Biydha Nagar'],
           schedule: 'Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
         },
         route4: {
           title: 'Bus 4',
           routeName: 'Campus shuttle route',
           timeId: 'time-route4',
-          stops: 'Anayet bazar → DC hill → Kotuyali → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          stops: ['Anayet bazar', 'DC hill', 'Kotuyali', 'New bridge', 'Moizzartek', 'Shantirhut', 'Badamtol', 'Bypass road', 'Komol munshir hut', 'BGC Biydha Nagar'],
           schedule: 'Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
         }
       };
@@ -477,6 +608,7 @@
       const lastUpdated = document.getElementById('lastUpdated');
       const backToRoutesBtn = document.getElementById('backToRoutes');
       const routeCards = document.querySelectorAll('.route-card');
+      const mapDriverMeta = document.getElementById('mapDriverMeta');
 
       const map = L.map('map', { zoomControl: true, scrollWheelZoom: true }).setView([22.364, 91.812], 13);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -499,6 +631,41 @@
       function formatTime(dateValue) {
         const date = new Date(dateValue || Date.now());
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      }
+
+      function renderStops(routeKey, container) {
+        const stops = routeMeta[routeKey].stops;
+        const items = stops.map((stop, index) => `
+          <div class="stop-step ${index === stops.length - 1 ? 'is-last' : ''}">
+            <span class="stop-dot" aria-hidden="true"></span>
+            <span class="stop-label">${stop}</span>
+          </div>
+        `).join('');
+        container.innerHTML = `
+          <strong>Stops</strong>
+          <div class="stop-timeline">${items}</div>
+        `;
+      }
+
+      function renderSchedule(routeKey, container) {
+        const info = routeMeta[routeKey];
+        container.innerHTML = `
+          <strong>Schedule</strong>
+          <div class="schedule-row"><span class="schedule-icon" aria-hidden="true">🕐</span><span>${info.schedule}</span></div>
+          <div class="schedule-row"><span class="schedule-icon" aria-hidden="true">🏫</span><span>Campus: BGC Trust University</span></div>
+        `;
+      }
+
+      function renderRouteCards() {
+        routeCards.forEach((card) => {
+          const routeKey = card.dataset.route;
+          const stopsContainer = card.querySelector('.route-stop-list');
+          const scheduleContainer = card.querySelector('.route-schedule');
+          const timestampEl = card.querySelector('.timestamp strong');
+          timestampEl.textContent = routeMeta[routeKey].stops.join(' • ');
+          renderStops(routeKey, stopsContainer);
+          renderSchedule(routeKey, scheduleContainer);
+        });
       }
 
       function updateRouteTimestamp(routeKey, timeString) {
@@ -529,6 +696,35 @@
         setTimeout(() => {
           map.invalidateSize();
         }, 180);
+      }
+
+      function applyDriverCardStatus(routeKey, data) {
+        const card = document.querySelector(`.route-card[data-route="${routeKey}"]`);
+        if (!card) return;
+
+        const statusTextEl = card.querySelector('.driver-status-text');
+        const updatedEl = card.querySelector('.driver-updated');
+        const driverDot = card.querySelector('.driver-status .driver-dot');
+
+        const driverName = data && data.driverName ? data.driverName : '';
+        const isSharing = Boolean(data && data.isSharing && Number.isFinite(Number(data.latitude)) && Number.isFinite(Number(data.longitude)));
+
+        if (isSharing) {
+          card.classList.add('is-live');
+          card.classList.remove('is-offline');
+          statusTextEl.textContent = driverName ? `Driver: ${driverName} • Sharing` : 'Driver: Sharing';
+          if (driverDot) driverDot.classList.add('live');
+          const when = formatTime(data.updatedAt || Date.now());
+          updatedEl.hidden = false;
+          updatedEl.textContent = `Updated ${when}`;
+        } else {
+          card.classList.remove('is-live');
+          card.classList.add('is-offline');
+          statusTextEl.textContent = driverName ? `Driver: ${driverName} • Offline` : 'No driver assigned';
+          if (driverDot) driverDot.classList.remove('live');
+          updatedEl.hidden = true;
+          updatedEl.textContent = '';
+        }
       }
 
       function showMap(routeKey) {
@@ -562,12 +758,15 @@
         const routeRef = ref(db, `busLocation/${routeKey}`);
         activeUnsubscribe = onValue(routeRef, (snapshot) => {
           const data = snapshot.val();
+          const driverName = data && data.driverName ? data.driverName : 'unavailable';
+          mapDriverMeta.textContent = driverName !== 'unavailable' ? `Driver: ${driverName}` : 'Driver: unavailable';
 
-          if (!data || data.latitude === undefined || data.longitude === undefined) {
-            const fallback = `No live data for ${routeMeta[routeKey].title}.`;
+          if (!data || !data.isSharing || data.latitude === undefined || data.longitude === undefined) {
+            const fallback = data && data.driverName ? `Bus offline • ${data.driverName} is not sharing` : `No live data for ${routeMeta[routeKey].title}.`;
             updateStatus(fallback);
             lastUpdated.textContent = '--:--';
-            updateRouteTimestamp(routeKey, routeMeta[routeKey].stops);
+            updateRouteTimestamp(routeKey, routeMeta[routeKey].stops.join(' • '));
+            applyDriverCardStatus(routeKey, data);
             return;
           }
 
@@ -576,9 +775,10 @@
           const when = formatTime(data.updatedAt || Date.now());
 
           updateMarker(lat, lng, routeKey);
-          updateStatus(`Tracking ${routeMeta[routeKey].title} • Updated ${when}`);
+          updateStatus(`Tracking ${routeMeta[routeKey].title} • ${data.driverName ? `Driver: ${data.driverName}` : 'Driver: active'} • Updated ${when}`);
           lastUpdated.textContent = when;
           updateRouteTimestamp(routeKey, when);
+          applyDriverCardStatus(routeKey, data);
         }, (error) => {
           console.error('Firebase listener error:', error);
           updateStatus(`Unable to watch ${routeMeta[routeKey].title}.`);
@@ -627,6 +827,7 @@
       history.replaceState({ screen: 'routes' }, '', '#routes');
       map.setView(defaultCenter, 13);
       marker.bindPopup('Bus 1');
+      renderRouteCards();
       showRouteList();
     </script>
   </body>

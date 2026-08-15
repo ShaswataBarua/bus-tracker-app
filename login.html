@@ -191,14 +191,35 @@
       }
 
       .notice-banner {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         margin: 0 0 16px;
         padding: 12px 14px;
-        border-radius: 12px;
-        background: #fffbe7;
-        border: 1px solid #f1d98d;
-        color: #6b4a10;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #edfdf3 0%, #f3fbf5 100%);
+        border: 1px solid rgba(19, 130, 79, 0.14);
+        box-shadow: 0 10px 18px rgba(10, 95, 58, 0.05);
+        color: var(--green-900);
         font-size: 0.82rem;
         line-height: 1.5;
+      }
+
+      .notice-icon {
+        flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: rgba(19, 130, 79, 0.12);
+        display: grid;
+        place-items: center;
+        font-size: 1rem;
+      }
+
+      .notice-text {
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
       }
 
       .toggle-row {
@@ -412,8 +433,9 @@
             <p>Sign in to continue</p>
           </div>
 
-          <div class="notice-banner">
-            Bus schedules may change or be reshuffled by bus authority. Contact: Nobi Mama - 01824-834129
+          <div class="notice-banner" aria-label="Important schedule notice">
+            <div class="notice-icon" aria-hidden="true">ℹ️</div>
+            <div class="notice-text">Schedules may change. Contact Nobi Mama: 01824-834129</div>
           </div>
 
           <div class="toggle-row" role="tablist" aria-label="Login mode">

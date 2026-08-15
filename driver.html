@@ -41,7 +41,7 @@
       }
 
       .screen {
-        width: min(100%, 540px);
+        width: min(100%, 620px);
         margin: 0 auto;
       }
 
@@ -102,7 +102,7 @@
       .route-card {
         border: 1px solid var(--border);
         background: var(--white);
-        border-radius: 18px;
+        border-radius: 20px;
         padding: 16px 12px 12px;
         text-align: left;
         box-shadow: 0 12px 24px rgba(10, 95, 58, 0.07);
@@ -123,7 +123,7 @@
 
       .route-card .route-body {
         font-size: 0.82rem;
-        line-height: 1.5;
+        line-height: 1.6;
         color: var(--text);
         margin-bottom: 12px;
       }
@@ -210,7 +210,7 @@
       }
 
       .route-details .info-block {
-        margin-bottom: 10px;
+        margin-bottom: 12px;
         line-height: 1.6;
         color: var(--text);
       }
@@ -222,6 +222,85 @@
         text-transform: uppercase;
         color: var(--green-800);
         margin-bottom: 4px;
+      }
+
+      .route-details .timeline {
+        position: relative;
+        padding-left: 12px;
+        margin-top: 8px;
+      }
+
+      .route-details .timeline::before {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        bottom: 4px;
+        width: 2px;
+        background: linear-gradient(180deg, rgba(19,130,79,0.35), rgba(19,130,79,0.1));
+      }
+
+      .route-details .timeline-item {
+        position: relative;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 4px 0 8px;
+      }
+
+      .route-details .timeline-item:last-child {
+        padding-bottom: 0;
+      }
+
+      .route-details .timeline-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--green-700);
+        border: 2px solid var(--white);
+        box-shadow: 0 0 0 4px rgba(19, 130, 79, 0.12);
+        margin-top: 4px;
+        flex-shrink: 0;
+      }
+
+      .schedule-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        line-height: 1.5;
+        margin-top: 6px;
+      }
+
+      .schedule-icon {
+        font-size: 1rem;
+      }
+
+      .coord-card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .coord-box {
+        background: #f5fff9;
+        border: 1px solid rgba(19, 130, 79, 0.12);
+        border-radius: 12px;
+        padding: 10px 12px;
+      }
+
+      .coord-box strong {
+        display: block;
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--green-900);
+        margin-bottom: 4px;
+      }
+
+      .coord-box span {
+        font-weight: 700;
+        color: var(--text);
       }
 
       .actions {
@@ -251,6 +330,10 @@
         box-shadow: 0 12px 18px rgba(10, 95, 58, 0.16);
       }
 
+      .primary-btn.sharing {
+        background: linear-gradient(135deg, #178c59, #0c6e49);
+      }
+
       .secondary-btn {
         background: #f3f7f4;
         color: var(--text);
@@ -262,21 +345,29 @@
         color: var(--white);
       }
 
+      .status-pulse {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #2ecb75;
+        box-shadow: 0 0 0 6px rgba(46, 203, 117, 0.15);
+        animation: pulse 1.6s infinite ease-in-out;
+        margin-right: 8px;
+        vertical-align: middle;
+      }
+
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.15); opacity: 0.75; }
+      }
+
       .note {
         margin-top: 10px;
         font-size: 0.9rem;
         text-align: center;
         color: var(--muted);
         line-height: 1.5;
-      }
-
-      .link-btn {
-        border: none;
-        background: transparent;
-        color: var(--green-800);
-        font-size: 0.93rem;
-        font-weight: 700;
-        cursor: pointer;
       }
 
       .modal {
@@ -295,7 +386,7 @@
       }
 
       .modal-card {
-        width: min(100%, 360px);
+        width: min(100%, 380px);
         background: var(--white);
         border-radius: 20px;
         padding: 22px 18px;
@@ -313,18 +404,50 @@
         line-height: 1.6;
       }
 
+      .modal-card label {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--text);
+      }
+
+      .modal-card input {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #fbfffc;
+        padding: 12px 14px;
+        font-size: 1rem;
+        color: var(--text);
+        margin-bottom: 12px;
+      }
+
+      .modal-card input:focus {
+        outline: none;
+        border-color: rgba(19, 130, 79, 0.8);
+        box-shadow: 0 0 0 4px rgba(19, 130, 79, 0.1);
+      }
+
       .modal-actions {
         display: flex;
         gap: 10px;
       }
 
-      @media (max-width: 480px) {
-        .route-grid {
-          grid-template-columns: 1fr;
-        }
+      .modal-error {
+        min-height: 18px;
+        color: var(--danger);
+        font-size: 0.82rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
 
+      @media (max-width: 480px) {
+        .route-grid,
+        .coord-card,
         .actions,
         .modal-actions {
+          grid-template-columns: 1fr;
           flex-direction: column;
         }
       }
@@ -345,11 +468,25 @@
               <h3>BUS 1</h3>
               <div class="route-body">
                 <strong>Stops</strong>
-                GEC → 2 No Gate → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
+                <div class="timeline">
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>GEC</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>2 No Gate</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Muradpur</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Chandgaon Thana</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Access Road</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Tulatoli</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>New bridge</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Moizzartek</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Shantirhut</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Badamtol</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Bypass road</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Komol munshir hut</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>BGC Biydha Nagar</span></div>
+                </div>
               </div>
               <div class="route-body">
                 <strong>Schedule</strong>
-                Leaves 8:15 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+                <div class="schedule-row"><span class="schedule-icon" aria-hidden="true">🕐</span><span>Leaves 8:15 AM • Reaches Campus 9:30 AM</span></div>
               </div>
               <button class="assign-btn" type="button" data-route="route1">Assign as Driver</button>
             </div>
@@ -358,11 +495,24 @@
               <h3>BUS 2</h3>
               <div class="route-body">
                 <strong>Stops</strong>
-                Oxygen → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
+                <div class="timeline">
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Oxygen</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Muradpur</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Chandgaon Thana</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Access Road</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Tulatoli</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>New bridge</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Moizzartek</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Shantirhut</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Badamtol</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Bypass road</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Komol munshir hut</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>BGC Biydha Nagar</span></div>
+                </div>
               </div>
               <div class="route-body">
                 <strong>Schedule</strong>
-                Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+                <div class="schedule-row"><span class="schedule-icon" aria-hidden="true">🕐</span><span>Leaves 8:10 AM • Reaches Campus 9:30 AM</span></div>
               </div>
               <button class="assign-btn" type="button" data-route="route2">Assign as Driver</button>
             </div>
@@ -371,11 +521,22 @@
               <h3>BUS 3</h3>
               <div class="route-body">
                 <strong>Stops</strong>
-                Agrabad → Newmarket → Kotoyali → Newbridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
+                <div class="timeline">
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Agrabad</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Newmarket</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Kotoyali</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Newbridge</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Moizzartek</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Shantirhut</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Badamtol</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Bypass road</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Komol munshir hut</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>BGC Biydha Nagar</span></div>
+                </div>
               </div>
               <div class="route-body">
                 <strong>Schedule</strong>
-                Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+                <div class="schedule-row"><span class="schedule-icon" aria-hidden="true">🕐</span><span>Leaves 8:10 AM • Reaches Campus 9:30 AM</span></div>
               </div>
               <button class="assign-btn" type="button" data-route="route3">Assign as Driver</button>
             </div>
@@ -384,11 +545,22 @@
               <h3>BUS 4</h3>
               <div class="route-body">
                 <strong>Stops</strong>
-                Anayet bazar → DC hill → Kotuyali → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
+                <div class="timeline">
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Anayet bazar</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>DC hill</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Kotuyali</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>New bridge</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Moizzartek</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Shantirhut</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Badamtol</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Bypass road</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>Komol munshir hut</span></div>
+                  <div class="timeline-item"><span class="timeline-dot"></span><span>BGC Biydha Nagar</span></div>
+                </div>
               </div>
               <div class="route-body">
                 <strong>Schedule</strong>
-                Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+                <div class="schedule-row"><span class="schedule-icon" aria-hidden="true">🕐</span><span>Leaves 8:10 AM • Reaches Campus 9:30 AM</span></div>
               </div>
               <button class="assign-btn" type="button" data-route="route4">Assign as Driver</button>
             </div>
@@ -410,11 +582,23 @@
             <h3 id="assignmentTitle">You are driving BUS 1</h3>
             <div class="info-block">
               <strong>Route stops</strong>
-              <span id="routeStopsText">GEC → 2 No Gate → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar</span>
+              <div class="timeline" id="routeStopsText"></div>
             </div>
             <div class="info-block">
               <strong>Schedule</strong>
-              <span id="routeScheduleText">Leaves 8:15 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM</span>
+              <div class="schedule-row"><span class="schedule-icon" aria-hidden="true">🕐</span><span id="routeScheduleText">Leaves 8:15 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM</span></div>
+              <div class="schedule-row"><span class="schedule-icon" aria-hidden="true">🏫</span><span>BGC Trust University</span></div>
+            </div>
+
+            <div class="coord-card">
+              <div class="coord-box">
+                <strong>Latitude</strong>
+                <span id="latitudeValue">--</span>
+              </div>
+              <div class="coord-box">
+                <strong>Longitude</strong>
+                <span id="longitudeValue">--</span>
+              </div>
             </div>
           </div>
 
@@ -428,6 +612,20 @@
           </div>
 
           <div class="note">Location is shared every 10 seconds to Firebase for the selected bus route.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="assignmentModal" aria-hidden="true">
+      <div class="modal-card">
+        <h3>Enter your name</h3>
+        <p>Choose the name that will appear for this bus assignment.</p>
+        <label for="driverNameInput">Driver name</label>
+        <input id="driverNameInput" type="text" maxlength="40" placeholder="Enter your name" />
+        <div class="modal-error" id="driverNameError"></div>
+        <div class="modal-actions">
+          <button class="btn secondary-btn" id="cancelAssignmentBtn" type="button">Cancel</button>
+          <button class="btn primary-btn" id="confirmAssignmentBtn" type="button">Confirm</button>
         </div>
       </div>
     </div>
@@ -460,26 +658,26 @@
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
 
-      const assignmentKey = 'bgc-bus-assignment';
+      const assignmentKey = 'bgc-bus-driver-assignments';
       const routeMeta = {
         route1: {
           label: 'BUS 1',
-          stops: 'GEC → 2 No Gate → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          stops: ['GEC', '2 No Gate', 'Muradpur', 'Chandgaon Thana', 'Access Road', 'Tulatoli', 'New bridge', 'Moizzartek', 'Shantirhut', 'Badamtol', 'Bypass road', 'Komol munshir hut', 'BGC Biydha Nagar'],
           schedule: 'Leaves 8:15 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
         },
         route2: {
           label: 'BUS 2',
-          stops: 'Oxygen → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          stops: ['Oxygen', 'Muradpur', 'Chandgaon Thana', 'Access Road', 'Tulatoli', 'New bridge', 'Moizzartek', 'Shantirhut', 'Badamtol', 'Bypass road', 'Komol munshir hut', 'BGC Biydha Nagar'],
           schedule: 'Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
         },
         route3: {
           label: 'BUS 3',
-          stops: 'Agrabad → Newmarket → Kotoyali → Newbridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          stops: ['Agrabad', 'Newmarket', 'Kotoyali', 'Newbridge', 'Moizzartek', 'Shantirhut', 'Badamtol', 'Bypass road', 'Komol munshir hut', 'BGC Biydha Nagar'],
           schedule: 'Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
         },
         route4: {
           label: 'BUS 4',
-          stops: 'Anayet bazar → DC hill → Kotuyali → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          stops: ['Anayet bazar', 'DC hill', 'Kotuyali', 'New bridge', 'Moizzartek', 'Shantirhut', 'Badamtol', 'Bypass road', 'Komol munshir hut', 'BGC Biydha Nagar'],
           schedule: 'Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
         }
       };
@@ -488,6 +686,9 @@
       let intervalId = null;
       let isSharing = false;
       let selectedRoute = 'route1';
+      let currentDriverName = '';
+      let pendingRouteKey = null;
+      let lastKnownPosition = { latitude: null, longitude: null, accuracy: null };
 
       const routeScreen = document.getElementById('routeScreen');
       const shareScreen = document.getElementById('shareScreen');
@@ -499,9 +700,16 @@
       const assignmentTitle = document.getElementById('assignmentTitle');
       const routeStopsText = document.getElementById('routeStopsText');
       const routeScheduleText = document.getElementById('routeScheduleText');
+      const latitudeValue = document.getElementById('latitudeValue');
+      const longitudeValue = document.getElementById('longitudeValue');
       const permissionModal = document.getElementById('permissionModal');
+      const assignmentModal = document.getElementById('assignmentModal');
+      const driverNameInput = document.getElementById('driverNameInput');
+      const driverNameError = document.getElementById('driverNameError');
       const openSettingsBtn = document.getElementById('openSettingsBtn');
       const cancelPermissionBtn = document.getElementById('cancelPermissionBtn');
+      const cancelAssignmentBtn = document.getElementById('cancelAssignmentBtn');
+      const confirmAssignmentBtn = document.getElementById('confirmAssignmentBtn');
       const routeBackBtn = document.getElementById('routeBackBtn');
       const shareBackBtn = document.getElementById('shareBackBtn');
 
@@ -511,23 +719,25 @@
         statusEl.classList.toggle('error', isError);
       }
 
-      function getAssignedRoute() {
+      function getAssignments() {
         try {
           const value = localStorage.getItem(assignmentKey);
-          if (!value) return null;
-          return JSON.parse(value);
+          if (!value) return [];
+          const parsed = JSON.parse(value);
+          return Array.isArray(parsed) ? parsed : [];
         } catch (error) {
           console.error('Assignment parse error:', error);
-          return null;
+          return [];
         }
       }
 
-      function persistAssignment(routeKey) {
-        localStorage.setItem(assignmentKey, JSON.stringify({ routeKey, driver: 'Current Driver' }));
+      function saveAssignments(assignments) {
+        localStorage.setItem(assignmentKey, JSON.stringify(assignments));
       }
 
-      function clearAssignment() {
-        localStorage.removeItem(assignmentKey);
+      function removeCurrentDriverAssignment(routeKey, driverName) {
+        const assignments = getAssignments().filter((assignment) => !(assignment.routeKey === routeKey && assignment.driverName.toLowerCase() === driverName.toLowerCase()));
+        saveAssignments(assignments);
       }
 
       function showPermissionModal() {
@@ -536,6 +746,25 @@
 
       function hidePermissionModal() {
         permissionModal.classList.remove('show');
+      }
+
+      function showAssignmentModal(routeKey) {
+        pendingRouteKey = routeKey;
+        driverNameError.textContent = '';
+        driverNameInput.value = '';
+        assignmentModal.classList.add('show');
+        setTimeout(() => driverNameInput.focus(), 50);
+      }
+
+      function hideAssignmentModal() {
+        assignmentModal.classList.remove('show');
+        pendingRouteKey = null;
+      }
+
+      function renderStopTimeline(stops) {
+        routeStopsText.innerHTML = stops.map((stop) => `
+          <div class="timeline-item"><span class="timeline-dot"></span><span>${stop}</span></div>
+        `).join('');
       }
 
       function showRouteSelection() {
@@ -548,31 +777,47 @@
         selectedRoute = routeKey;
         const info = routeMeta[routeKey];
         routeBadge.textContent = info.label;
-        assignmentTitle.textContent = `You are driving ${info.label}`;
-        routeStopsText.textContent = info.stops;
+        assignmentTitle.textContent = currentDriverName ? `Driver: ${currentDriverName} • ${info.label}` : `You are driving ${info.label}`;
         routeScheduleText.textContent = info.schedule;
+        renderStopTimeline(info.stops);
         routeScreen.hidden = true;
         shareScreen.hidden = false;
         setStatus(`You are driving ${info.label}`, true, false);
         history.pushState({ screen: 'share', routeKey }, '', `#${routeKey}`);
       }
 
-      function handleClaim(routeKey) {
-        const assignment = getAssignedRoute();
-        if (assignment && assignment.routeKey && assignment.routeKey !== routeKey) {
-          alert('This bus is already assigned to another driver');
+      function handleAssignmentConfirm() {
+        const value = driverNameInput.value.trim();
+        if (!value) {
+          driverNameError.textContent = 'Please enter your name.';
           return;
         }
 
-        persistAssignment(routeKey);
-        showSharingScreen(routeKey);
+        currentDriverName = value;
+        const assignments = getAssignments();
+        const existing = assignments.some((assignment) => assignment.routeKey === pendingRouteKey && assignment.driverName.toLowerCase() === value.toLowerCase());
+
+        if (!existing) {
+          assignments.push({ routeKey: pendingRouteKey, driverName: value });
+          saveAssignments(assignments);
+        }
+
+        hideAssignmentModal();
+        showSharingScreen(pendingRouteKey);
       }
 
-      async function sendLocationToFirebase(lat, lng, accuracy) {
+      function updateLocationDisplay(latitude, longitude) {
+        latitudeValue.textContent = Number.isFinite(latitude) ? latitude.toFixed(6) : '--';
+        longitudeValue.textContent = Number.isFinite(longitude) ? longitude.toFixed(6) : '--';
+      }
+
+      async function writeLocationToFirebase(lat, lng, accuracy, driverName, sharing) {
         const locationData = {
           latitude: lat,
           longitude: lng,
           accuracy: accuracy,
+          driverName: driverName || currentDriverName || '',
+          isSharing: Boolean(sharing),
           updatedAt: Date.now()
         };
 
@@ -586,7 +831,9 @@
 
       function handleLocation(position) {
         const { latitude, longitude, accuracy } = position.coords;
-        sendLocationToFirebase(latitude, longitude, accuracy);
+        lastKnownPosition = { latitude, longitude, accuracy };
+        updateLocationDisplay(latitude, longitude);
+        writeLocationToFirebase(latitude, longitude, accuracy, currentDriverName, true);
       }
 
       function handleError(error) {
@@ -656,10 +903,13 @@
       }
 
       async function startSharing() {
-        const assignment = getAssignedRoute();
-        if (!assignment || assignment.routeKey !== selectedRoute) {
-          handleClaim(selectedRoute);
-          return;
+        if (!currentDriverName) {
+          const name = driverNameInput.value.trim();
+          if (!name) {
+            showAssignmentModal(selectedRoute);
+            return;
+          }
+          currentDriverName = name;
         }
 
         const permissionGranted = await requestLocationAccess();
@@ -669,6 +919,9 @@
 
         isSharing = true;
         setStatus(`Sharing ${routeMeta[selectedRoute].label}...`, true);
+        startBtn.textContent = 'Sharing Location...';
+        startBtn.classList.add('sharing');
+        startBtn.innerHTML = '<span class="status-pulse" aria-hidden="true"></span> Sharing Location...';
 
         if (window.Capacitor && window.Capacitor.isNativePlatform()) {
           const capacitorPlugins = window.Capacitor && window.Capacitor.Plugins ? window.Capacitor.Plugins : null;
@@ -707,7 +960,7 @@
         }, 10000);
       }
 
-      function stopSharing() {
+      async function stopSharing() {
         isSharing = false;
 
         if (watchId !== null) {
@@ -728,22 +981,38 @@
           intervalId = null;
         }
 
+        const payload = {
+          latitude: lastKnownPosition.latitude ?? null,
+          longitude: lastKnownPosition.longitude ?? null,
+          accuracy: lastKnownPosition.accuracy ?? null,
+          driverName: currentDriverName || '',
+          isSharing: false,
+          updatedAt: Date.now()
+        };
+        await set(ref(db, `busLocation/${selectedRoute}`), payload);
+        startBtn.textContent = 'Start Sharing Location';
+        startBtn.classList.remove('sharing');
         setStatus('Stopped', false);
       }
 
       document.querySelectorAll('.assign-btn').forEach((button) => {
         button.addEventListener('click', (event) => {
           event.stopPropagation();
-          handleClaim(button.dataset.route);
+          showAssignmentModal(button.dataset.route);
         });
       });
 
       startBtn.addEventListener('click', startSharing);
-      stopBtn.addEventListener('click', stopSharing);
+      stopBtn.addEventListener('click', () => {
+        stopSharing();
+      });
 
       changeRouteBtn.addEventListener('click', () => {
-        clearAssignment();
+        if (currentDriverName && selectedRoute) {
+          removeCurrentDriverAssignment(selectedRoute, currentDriverName);
+        }
         stopSharing();
+        currentDriverName = '';
         showRouteSelection();
       });
 
@@ -754,6 +1023,17 @@
       shareBackBtn.addEventListener('click', () => {
         stopSharing();
         showRouteSelection();
+      });
+
+      confirmAssignmentBtn.addEventListener('click', handleAssignmentConfirm);
+      cancelAssignmentBtn.addEventListener('click', () => {
+        hideAssignmentModal();
+      });
+
+      driverNameInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          handleAssignmentConfirm();
+        }
       });
 
       openSettingsBtn.addEventListener('click', async () => {
@@ -796,9 +1076,11 @@
       }
 
       history.replaceState({ screen: 'routes' }, '', '#routes');
-      const assignment = getAssignedRoute();
-      if (assignment && assignment.routeKey) {
-        selectedRoute = assignment.routeKey;
+      const assignments = getAssignments();
+      if (assignments.length > 0) {
+        const latestAssignment = assignments[assignments.length - 1];
+        selectedRoute = latestAssignment.routeKey;
+        currentDriverName = latestAssignment.driverName || '';
         showSharingScreen(selectedRoute);
       } else {
         showRouteSelection();
