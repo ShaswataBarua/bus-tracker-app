@@ -739,15 +739,7 @@
       }
 
       function backToRoutes() {
-        if (activeUnsubscribe) {
-          activeUnsubscribe();
-          activeUnsubscribe = null;
-        }
-
-        showRouteList();
-        if (window.history.length > 1) {
-          history.back();
-        }
+        window.location.href = 'login.html';
       }
 
       function listenToRoute(routeKey) {
@@ -796,31 +788,14 @@
         backToRoutes();
       });
 
-      window.addEventListener('popstate', (event) => {
-        const state = event.state;
-        if (state && state.screen === 'map' && state.routeKey) {
-          showMap(state.routeKey);
-        } else {
-          if (activeUnsubscribe) {
-            activeUnsubscribe();
-            activeUnsubscribe = null;
-          }
-          showRouteList();
-        }
+      window.addEventListener('popstate', () => {
+        window.location.href = 'login.html';
       });
 
       if (window.Capacitor && window.Capacitor.isNativePlatform()) {
         const { App } = window.Capacitor;
-        App.addListener('backButton', ({ canGoBack }) => {
-          if (canGoBack) {
-            window.history.back();
-          } else {
-            if (activeUnsubscribe) {
-              activeUnsubscribe();
-              activeUnsubscribe = null;
-            }
-            showRouteList();
-          }
+        App.addListener('backButton', () => {
+          window.location.href = 'login.html';
         });
       }
 

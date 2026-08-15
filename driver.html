@@ -800,20 +800,6 @@
       }
 
       function navigateBack() {
-        const currentScreen = screenStack[screenStack.length - 1];
-
-        if (currentScreen === 'driverShare') {
-          stopSharing();
-          screenStack.pop();
-          showRouteSelection();
-          return;
-        }
-
-        if (currentScreen === 'selectBus') {
-          window.location.href = 'login.html';
-          return;
-        }
-
         window.location.href = 'login.html';
       }
 
@@ -1065,11 +1051,7 @@
       });
 
       shareBackBtn.addEventListener('click', () => {
-        stopSharing();
-        if (screenStack[screenStack.length - 1] === 'driverShare') {
-          screenStack.pop();
-        }
-        showRouteSelection();
+        navigateBack();
       });
 
       confirmAssignmentBtn.addEventListener('click', handleAssignmentConfirm);
@@ -1101,9 +1083,13 @@
       if (window.Capacitor && window.Capacitor.isNativePlatform()) {
         const { App } = window.Capacitor;
         App.addListener('backButton', () => {
-          navigateBack();
+          window.location.href = 'login.html';
         });
       }
+
+      window.addEventListener('popstate', () => {
+        window.location.href = 'login.html';
+      });
 
       const assignments = getAssignments();
       if (assignments.length > 0) {
