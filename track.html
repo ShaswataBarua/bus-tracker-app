@@ -727,6 +727,8 @@
         }
       }
 
+      let screenStack = ['routes'];
+
       function showMap(routeKey) {
         currentRoute = routeKey;
         const info = routeMeta[routeKey];
@@ -735,10 +737,31 @@
         mapScreen.hidden = false;
         ensureMapVisible();
         listenToRoute(routeKey);
-        history.pushState({ screen: 'map', routeKey }, '', `#${routeKey}`);
+        if (screenStack[screenStack.length - 1] !== 'map') {
+          screenStack.push('map');
+        }
       }
 
-      function backToRoutes() {
+      function showRouteList() {
+        routeScreen.classList.remove('hidden');
+        mapScreen.hidden = true;
+        if (screenStack[screenStack.length - 1] !== 'routes') {
+          screenStack.push('routes');
+        }
+      }
+
+      function goBackOneStep() {
+        if (screenStack[screenStack.length - 1] === 'map') {
+          screenStack.pop();
+          showRouteList();
+          return;
+        }
+
+        if (screenStack.length <= 1) {
+          window.location.href = 'login.html';
+          return;
+        }
+
         window.location.href = 'login.html';
       }
 
@@ -785,21 +808,16 @@
       });
 
       backToRoutesBtn.addEventListener('click', () => {
-        backToRoutes();
-      });
-
-      window.addEventListener('popstate', () => {
-        window.location.href = 'login.html';
+        goBackOneStep();
       });
 
       if (window.Capacitor && window.Capacitor.isNativePlatform()) {
         const { App } = window.Capacitor;
         App.addListener('backButton', () => {
-          window.location.href = 'login.html';
+          goBackOneStep();
         });
       }
 
-      history.replaceState({ screen: 'routes' }, '', '#routes');
       map.setView(defaultCenter, 13);
       marker.bindPopup('Bus 1');
       renderRouteCards();

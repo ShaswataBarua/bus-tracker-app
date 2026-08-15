@@ -772,7 +772,6 @@
         routeScreen.hidden = false;
         shareScreen.hidden = true;
         if (screenStack[screenStack.length - 1] !== 'selectBus') {
-          screenStack = screenStack.filter((screen) => screen !== 'selectBus');
           screenStack.push('selectBus');
         }
       }
@@ -799,7 +798,18 @@
         }
       }
 
-      function navigateBack() {
+      function goBackOneStep() {
+        if (screenStack[screenStack.length - 1] === 'driverShare') {
+          screenStack.pop();
+          showRouteSelection();
+          return;
+        }
+
+        if (screenStack.length <= 1) {
+          window.location.href = 'login.html';
+          return;
+        }
+
         window.location.href = 'login.html';
       }
 
@@ -1047,11 +1057,11 @@
       });
 
       routeBackBtn.addEventListener('click', () => {
-        navigateBack();
+        goBackOneStep();
       });
 
       shareBackBtn.addEventListener('click', () => {
-        navigateBack();
+        goBackOneStep();
       });
 
       confirmAssignmentBtn.addEventListener('click', handleAssignmentConfirm);
@@ -1083,13 +1093,9 @@
       if (window.Capacitor && window.Capacitor.isNativePlatform()) {
         const { App } = window.Capacitor;
         App.addListener('backButton', () => {
-          window.location.href = 'login.html';
+          goBackOneStep();
         });
       }
-
-      window.addEventListener('popstate', () => {
-        window.location.href = 'login.html';
-      });
 
       const assignments = getAssignments();
       if (assignments.length > 0) {
