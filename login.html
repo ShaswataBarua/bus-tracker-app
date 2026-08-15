@@ -190,6 +190,17 @@
         font-size: 0.94rem;
       }
 
+      .notice-banner {
+        margin: 0 0 16px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #fffbe7;
+        border: 1px solid #f1d98d;
+        color: #6b4a10;
+        font-size: 0.82rem;
+        line-height: 1.5;
+      }
+
       .toggle-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -296,6 +307,27 @@
         text-decoration: underline;
       }
 
+      .reset-box {
+        display: none;
+        margin-top: 18px;
+        padding: 14px 12px 12px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: #f4fbf7;
+      }
+
+      .reset-box.show {
+        display: block;
+      }
+
+      .reset-status {
+        min-height: 18px;
+        margin-top: 10px;
+        color: var(--green-800);
+        font-size: 0.82rem;
+        font-weight: 700;
+      }
+
       .error {
         min-height: 20px;
         margin-top: 10px;
@@ -367,7 +399,7 @@
           </div>
           <div class="stat">
             <strong>100%</strong>
-            <span>Campus</span>
+            <span>ACCURATE</span>
           </div>
         </div>
       </div>
@@ -378,6 +410,10 @@
             <div class="logo-text" style="color: var(--green-800); letter-spacing: 0.08em; font-size: 0.77rem;">BGC Trust University Bangladesh</div>
             <h2>Welcome back</h2>
             <p>Sign in to continue</p>
+          </div>
+
+          <div class="notice-banner">
+            Bus schedules may change or be reshuffled by bus authority. Contact: Nobi Mama - 01824-834129
           </div>
 
           <div class="toggle-row" role="tablist" aria-label="Login mode">
@@ -405,7 +441,16 @@
           </form>
 
           <div class="meta-row">
-            <a href="#">Forgot your password?</a>
+            <a href="#" id="forgotLink">Forgot your password?</a>
+          </div>
+
+          <div class="reset-box" id="resetBox">
+            <div class="field-group" style="margin-bottom: 10px;">
+              <label for="resetEmail">Email</label>
+              <input id="resetEmail" type="email" placeholder="Enter your email address" autocomplete="email" />
+            </div>
+            <button class="btn primary-btn" type="button" id="resetButton">Send Reset Link</button>
+            <div class="reset-status" id="resetStatus" aria-live="polite"></div>
           </div>
         </div>
       </div>
@@ -419,6 +464,11 @@
       const errorMessage = document.getElementById('errorMessage');
       const idLabel = document.getElementById('idLabel');
       const closeBtn = document.getElementById('closeBtn');
+      const forgotLink = document.getElementById('forgotLink');
+      const resetBox = document.getElementById('resetBox');
+      const resetEmail = document.getElementById('resetEmail');
+      const resetButton = document.getElementById('resetButton');
+      const resetStatus = document.getElementById('resetStatus');
 
       let selectedMode = 'student';
 
@@ -433,8 +483,34 @@
         idLabel.textContent = mode === 'driver' ? 'Driver ID' : 'Student ID';
       }
 
+      function toggleResetBox(show) {
+        resetBox.classList.toggle('show', show);
+        resetStatus.textContent = '';
+        if (show) {
+          resetEmail.focus();
+        }
+      }
+
       modeButtons.forEach((button) => {
         button.addEventListener('click', () => setMode(button.dataset.mode));
+      });
+
+      forgotLink.addEventListener('click', (event) => {
+        event.preventDefault();
+        const show = !resetBox.classList.contains('show');
+        toggleResetBox(show);
+      });
+
+      resetButton.addEventListener('click', () => {
+        const emailValue = resetEmail.value.trim();
+        if (!emailValue) {
+          resetStatus.textContent = 'Please enter your email address.';
+          resetStatus.style.color = '#d14f5a';
+          return;
+        }
+
+        resetStatus.textContent = `Reset link sent to ${emailValue}. Please check your email.`;
+        resetStatus.style.color = '#0f6d42';
       });
 
       closeBtn.addEventListener('click', () => {

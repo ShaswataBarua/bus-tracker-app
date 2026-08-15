@@ -120,9 +120,31 @@
       }
 
       .route-name {
-        margin: 0 0 18px;
+        margin: 0 0 10px;
         color: var(--muted);
         font-size: 0.94rem;
+      }
+
+      .route-stop-list,
+      .route-schedule {
+        margin-top: 12px;
+        padding: 10px 12px;
+        border-radius: 12px;
+        background: #f8fffa;
+        border: 1px solid rgba(19, 130, 79, 0.12);
+        color: var(--text);
+        line-height: 1.5;
+        font-size: 0.84rem;
+      }
+
+      .route-stop-list strong,
+      .route-schedule strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--green-900);
       }
 
       .timestamp {
@@ -133,7 +155,7 @@
         background: linear-gradient(135deg, #f3fff8 0%, #ecfbf2 100%);
         border: 1px solid rgba(19, 130, 79, 0.1);
         border-radius: 14px;
-        margin-bottom: 16px;
+        margin-top: 16px;
         min-height: 56px;
       }
 
@@ -152,8 +174,8 @@
       }
 
       .timestamp strong {
-        font-size: 1.2rem;
-        line-height: 1.2;
+        font-size: 0.92rem;
+        line-height: 1.4;
         color: var(--green-900);
       }
 
@@ -168,6 +190,7 @@
         font-weight: 700;
         text-decoration: none;
         min-width: 120px;
+        margin-top: 16px;
       }
 
       .map-screen {
@@ -290,45 +313,77 @@
 
         <div class="route-grid">
           <button class="route-card" type="button" data-route="route1">
-            <span class="route-badge">Route 1</span>
-            <h3>Bus Track 1</h3>
-            <p class="route-name">Road 1</p>
+            <span class="route-badge">BUS 1</span>
+            <h3>Bus 1</h3>
+            <p class="route-name">Campus shuttle route</p>
+            <div class="route-stop-list">
+              <strong>Stops</strong>
+              GEC → 2 No Gate → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
+            </div>
+            <div class="route-schedule">
+              <strong>Schedule</strong>
+              Leaves 8:15 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+            </div>
             <div class="timestamp">
               <span class="live-dot"></span>
-              <strong id="time-route1">--:--</strong>
+              <strong id="time-route1">GEC → 2 No Gate → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar</strong>
             </div>
             <span class="live-btn">Live Map</span>
           </button>
 
           <button class="route-card" type="button" data-route="route2">
-            <span class="route-badge">Route 2</span>
-            <h3>Bus Track 2</h3>
-            <p class="route-name">Road 2</p>
+            <span class="route-badge">BUS 2</span>
+            <h3>Bus 2</h3>
+            <p class="route-name">Campus shuttle route</p>
+            <div class="route-stop-list">
+              <strong>Stops</strong>
+              Oxygen → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
+            </div>
+            <div class="route-schedule">
+              <strong>Schedule</strong>
+              Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+            </div>
             <div class="timestamp">
               <span class="live-dot"></span>
-              <strong id="time-route2">--:--</strong>
+              <strong id="time-route2">Oxygen → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar</strong>
             </div>
             <span class="live-btn">Live Map</span>
           </button>
 
           <button class="route-card" type="button" data-route="route3">
-            <span class="route-badge">Route 3</span>
-            <h3>Bus Track 3</h3>
-            <p class="route-name">Road 3</p>
+            <span class="route-badge">BUS 3</span>
+            <h3>Bus 3</h3>
+            <p class="route-name">Campus shuttle route</p>
+            <div class="route-stop-list">
+              <strong>Stops</strong>
+              Agrabad → Newmarket → Kotoyali → Newbridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
+            </div>
+            <div class="route-schedule">
+              <strong>Schedule</strong>
+              Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+            </div>
             <div class="timestamp">
               <span class="live-dot"></span>
-              <strong id="time-route3">--:--</strong>
+              <strong id="time-route3">Agrabad → Newmarket → Kotoyali → Newbridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar</strong>
             </div>
             <span class="live-btn">Live Map</span>
           </button>
 
           <button class="route-card" type="button" data-route="route4">
-            <span class="route-badge">Route 4</span>
-            <h3>Bus Track 4</h3>
-            <p class="route-name">Road 4</p>
+            <span class="route-badge">BUS 4</span>
+            <h3>Bus 4</h3>
+            <p class="route-name">Campus shuttle route</p>
+            <div class="route-stop-list">
+              <strong>Stops</strong>
+              Anayet bazar → DC hill → Kotuyali → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar
+            </div>
+            <div class="route-schedule">
+              <strong>Schedule</strong>
+              Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM
+            </div>
             <div class="timestamp">
               <span class="live-dot"></span>
-              <strong id="time-route4">--:--</strong>
+              <strong id="time-route4">Anayet bazar → DC hill → Kotuyali → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar</strong>
             </div>
             <span class="live-btn">Live Map</span>
           </button>
@@ -342,7 +397,7 @@
 
         <div class="map-header">
           <span class="eyebrow">Live tracking</span>
-          <h2 id="mapTitle">Bus Track 1</h2>
+          <h2 id="mapTitle">Bus 1</h2>
         </div>
 
         <div class="map-status">
@@ -385,10 +440,34 @@
       const db = getDatabase(app);
 
       const routeMeta = {
-        route1: { title: 'Bus Track 1', routeName: 'Road 1', timeId: 'time-route1' },
-        route2: { title: 'Bus Track 2', routeName: 'Road 2', timeId: 'time-route2' },
-        route3: { title: 'Bus Track 3', routeName: 'Road 3', timeId: 'time-route3' },
-        route4: { title: 'Bus Track 4', routeName: 'Road 4', timeId: 'time-route4' }
+        route1: {
+          title: 'Bus 1',
+          routeName: 'Campus shuttle route',
+          timeId: 'time-route1',
+          stops: 'GEC → 2 No Gate → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          schedule: 'Leaves 8:15 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
+        },
+        route2: {
+          title: 'Bus 2',
+          routeName: 'Campus shuttle route',
+          timeId: 'time-route2',
+          stops: 'Oxygen → Muradpur → Chandgaon Thana → Access Road → Tulatoli → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          schedule: 'Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
+        },
+        route3: {
+          title: 'Bus 3',
+          routeName: 'Campus shuttle route',
+          timeId: 'time-route3',
+          stops: 'Agrabad → Newmarket → Kotoyali → Newbridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          schedule: 'Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
+        },
+        route4: {
+          title: 'Bus 4',
+          routeName: 'Campus shuttle route',
+          timeId: 'time-route4',
+          stops: 'Anayet bazar → DC hill → Kotuyali → New bridge → Moizzartek → Shantirhut → Badamtol → Bypass road → Komol munshir hut → BGC Biydha Nagar',
+          schedule: 'Leaves 8:10 AM → Reaches Campus 9:30 AM → Returns to drop students 3:00 PM'
+        }
       };
 
       const routeScreen = document.getElementById('routeScreen');
@@ -399,9 +478,10 @@
       const backToRoutesBtn = document.getElementById('backToRoutes');
       const routeCards = document.querySelectorAll('.route-card');
 
-      const map = L.map('map').setView([22.364, 91.812], 13);
+      const map = L.map('map', { zoomControl: true, scrollWheelZoom: true }).setView([22.364, 91.812], 13);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
       }).addTo(map);
 
       const marker = L.marker([22.364, 91.812]).addTo(map);
@@ -435,7 +515,7 @@
       function updateMarker(lat, lng, routeKey) {
         const position = [lat, lng];
         marker.setLatLng(position);
-        marker.bindPopup(`${routeIcons[routeKey] || '🚍'} ${routeKey.toUpperCase()}`);
+        marker.bindPopup(`${routeIcons[routeKey] || '🚍'} ${routeMeta[routeKey].title}`);
         map.setView(position, Math.max(map.getZoom(), 13));
       }
 
@@ -444,12 +524,20 @@
         mapScreen.hidden = true;
       }
 
+      function ensureMapVisible() {
+        if (!map) return;
+        setTimeout(() => {
+          map.invalidateSize();
+        }, 180);
+      }
+
       function showMap(routeKey) {
         currentRoute = routeKey;
         const info = routeMeta[routeKey];
         mapTitle.textContent = info.title;
         routeScreen.classList.add('hidden');
         mapScreen.hidden = false;
+        ensureMapVisible();
         listenToRoute(routeKey);
         history.pushState({ screen: 'map', routeKey }, '', `#${routeKey}`);
       }
@@ -476,10 +564,10 @@
           const data = snapshot.val();
 
           if (!data || data.latitude === undefined || data.longitude === undefined) {
-            const fallback = `No live data for ${routeKey}.`;
+            const fallback = `No live data for ${routeMeta[routeKey].title}.`;
             updateStatus(fallback);
             lastUpdated.textContent = '--:--';
-            updateRouteTimestamp(routeKey, '--:--');
+            updateRouteTimestamp(routeKey, routeMeta[routeKey].stops);
             return;
           }
 
@@ -488,12 +576,12 @@
           const when = formatTime(data.updatedAt || Date.now());
 
           updateMarker(lat, lng, routeKey);
-          updateStatus(`Tracking ${routeKey} • Updated ${when}`);
+          updateStatus(`Tracking ${routeMeta[routeKey].title} • Updated ${when}`);
           lastUpdated.textContent = when;
           updateRouteTimestamp(routeKey, when);
         }, (error) => {
           console.error('Firebase listener error:', error);
-          updateStatus(`Unable to watch ${routeKey}.`);
+          updateStatus(`Unable to watch ${routeMeta[routeKey].title}.`);
         });
       }
 
@@ -526,13 +614,19 @@
         App.addListener('backButton', ({ canGoBack }) => {
           if (canGoBack) {
             window.history.back();
+          } else {
+            if (activeUnsubscribe) {
+              activeUnsubscribe();
+              activeUnsubscribe = null;
+            }
+            showRouteList();
           }
         });
       }
 
       history.replaceState({ screen: 'routes' }, '', '#routes');
       map.setView(defaultCenter, 13);
-      marker.bindPopup('Route 1');
+      marker.bindPopup('Bus 1');
       showRouteList();
     </script>
   </body>
