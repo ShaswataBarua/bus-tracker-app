@@ -190,6 +190,44 @@
         border-color: var(--border);
       }
 
+      .sharing-controls {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .field-group {
+        display: grid;
+        gap: 8px;
+      }
+
+      .field-label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--green-800);
+      }
+
+      .field-group input,
+      .field-group select {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #fbfffc;
+        color: var(--text);
+        padding: 12px 14px;
+        font-size: 1rem;
+      }
+
+      .field-group input:focus,
+      .field-group select:focus {
+        outline: none;
+        border-color: rgba(19, 130, 79, 0.8);
+        box-shadow: 0 0 0 4px rgba(19, 130, 79, 0.1);
+      }
+
       .status.error {
         background: #fff2f3;
         color: #8f2f39;
@@ -576,6 +614,22 @@
             <span class="badge" id="selectedRouteBadge">BUS 1</span>
           </div>
 
+          <div class="sharing-controls">
+            <div class="field-group">
+              <label class="field-label" for="driverNameEntry">Driver name</label>
+              <input id="driverNameEntry" type="text" maxlength="40" placeholder="Enter your name" />
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="routeSelect">Route</label>
+              <select id="routeSelect">
+                <option value="route1">route1</option>
+                <option value="route2">route2</option>
+                <option value="route3">route3</option>
+                <option value="route4">route4</option>
+              </select>
+            </div>
+          </div>
+
           <div id="status" class="status off">No bus assigned yet.</div>
 
           <div class="route-details" id="routeDetails">
@@ -620,8 +674,8 @@
       <div class="modal-card">
         <h3>Enter your name</h3>
         <p>Choose the name that will appear for this bus assignment.</p>
-        <label for="driverNameInput">Driver name</label>
-        <input id="driverNameInput" type="text" maxlength="40" placeholder="Enter your name" />
+        <label for="assignmentDriverNameInput">Driver name</label>
+        <input id="assignmentDriverNameInput" type="text" maxlength="40" placeholder="Enter your name" />
         <div class="modal-error" id="driverNameError"></div>
         <div class="modal-actions">
           <button class="btn secondary-btn" id="cancelAssignmentBtn" type="button">Cancel</button>
@@ -705,7 +759,9 @@
       const longitudeValue = document.getElementById('longitudeValue');
       const permissionModal = document.getElementById('permissionModal');
       const assignmentModal = document.getElementById('assignmentModal');
-      const driverNameInput = document.getElementById('driverNameInput');
+      const driverNameEntry = document.getElementById('driverNameEntry');
+      const routeSelect = document.getElementById('routeSelect');
+      const assignmentDriverNameInput = document.getElementById('assignmentDriverNameInput');
       const driverNameError = document.getElementById('driverNameError');
       const openSettingsBtn = document.getElementById('openSettingsBtn');
       const cancelPermissionBtn = document.getElementById('cancelPermissionBtn');
@@ -752,9 +808,9 @@
       function showAssignmentModal(routeKey) {
         pendingRouteKey = routeKey;
         driverNameError.textContent = '';
-        driverNameInput.value = '';
+        assignmentDriverNameInput.value = driverNameEntry.value.trim();
         assignmentModal.classList.add('show');
-        setTimeout(() => driverNameInput.focus(), 50);
+        setTimeout(() => assignmentDriverNameInput.focus(), 50);
       }
 
       function hideAssignmentModal() {
@@ -794,10 +850,14 @@
         }
 
         selectedRoute = routeKey;
+        routeSelect.value = routeKey;
         routeBadge.textContent = info.label;
         assignmentTitle.textContent = `You are driving ${info.label}`;
         routeScheduleText.textContent = info.schedule;
         renderStopTimeline(info.stops);
+        if (driverNameEntry.value.trim()) {
+          currentDriverName = driverNameEntry.value.trim();
+        }
         setStatus(`You are driving ${info.label}`, true, false);
 
         if (screenStack[screenStack.length - 1] !== 'driverShare') {
@@ -821,7 +881,7 @@
 
       function handleAssignmentConfirm() {
         const routeKey = pendingRouteKey;
-        const value = driverNameInput.value.trim();
+        const value = assignmentDriverNameInput.value.trim();
         if (!routeKey) {
           driverNameError.textContent = 'Please select a bus first.';
           return;
@@ -833,6 +893,7 @@
         }
 
         currentDriverName = value;
+        driverNameEntry.value = value;
         const assignments = getAssignments();
         const existing = assignments.some((assignment) => assignment.routeKey === routeKey && assignment.driverName.toLowerCase() === value.toLowerCase());
 
@@ -850,29 +911,33 @@
         longitudeValue.textContent = Number.isFinite(longitude) ? longitude.toFixed(6) : '--';
       }
 
-      async function writeLocationToFirebase(lat, lng, accuracy, driverName, sharing) {
+      async function sendLocationToFirebase(lat, lng, accuracy, driverName, sharing) {
+        const routeKey = routeSelect.value || selectedRoute || 'route1';
+        selectedRoute = routeKey;
         const locationData = {
-          latitude: lat,
-          longitude: lng,
-          accuracy: accuracy,
-          driverName: driverName || currentDriverName || '',
+          latitude: Number.isFinite(lat) ? lat : null,
+          longitude: Number.isFinite(lng) ? lng : null,
+          accuracy: Number.isFinite(accuracy) ? accuracy : null,
+          updatedAt: Date.now(),
           isSharing: Boolean(sharing),
-          updatedAt: Date.now()
+          driverName: (driverName || currentDriverName || driverNameEntry.value.trim() || '').trim()
         };
 
         try {
-          await set(ref(db, `busLocation/${selectedRoute}`), locationData);
-          console.log(`Location saved to Firebase for ${selectedRoute}`);
+          await set(ref(db, `busLocation/${routeKey}`), locationData);
+          console.log(`Location saved to Firebase for ${routeKey}`);
         } catch (error) {
           console.error('Error saving location:', error);
         }
       }
 
+      const writeLocationToFirebase = (lat, lng, accuracy, driverName, sharing) => sendLocationToFirebase(lat, lng, accuracy, driverName, sharing);
+
       function handleLocation(position) {
         const { latitude, longitude, accuracy } = position.coords;
         lastKnownPosition = { latitude, longitude, accuracy };
         updateLocationDisplay(latitude, longitude);
-        writeLocationToFirebase(latitude, longitude, accuracy, currentDriverName, true);
+        sendLocationToFirebase(latitude, longitude, accuracy, currentDriverName || driverNameEntry.value.trim(), true);
       }
 
       function handleError(error) {
@@ -942,14 +1007,18 @@
       }
 
       async function startSharing() {
-        if (!currentDriverName) {
-          const name = driverNameInput.value.trim();
-          if (!name) {
-            showAssignmentModal(selectedRoute);
-            return;
-          }
-          currentDriverName = name;
+        const selectedKey = routeSelect.value || selectedRoute || 'route1';
+        selectedRoute = selectedKey;
+        const name = (driverNameEntry.value || '').trim();
+        if (!name) {
+          setStatus('Enter your driver name before starting.', false, true);
+          driverNameEntry.focus();
+          return;
         }
+
+        currentDriverName = name;
+        driverNameEntry.value = name;
+        assignmentDriverNameInput.value = name;
 
         const permissionGranted = await requestLocationAccess();
         if (!permissionGranted) {
@@ -1024,15 +1093,17 @@
           intervalId = null;
         }
 
+        const routeKey = routeSelect.value || selectedRoute || 'route1';
+        selectedRoute = routeKey;
         const payload = {
           latitude: lastKnownPosition.latitude ?? null,
           longitude: lastKnownPosition.longitude ?? null,
           accuracy: lastKnownPosition.accuracy ?? null,
-          driverName: currentDriverName || '',
+          updatedAt: Date.now(),
           isSharing: false,
-          updatedAt: Date.now()
+          driverName: currentDriverName || driverNameEntry.value.trim() || ''
         };
-        await set(ref(db, `busLocation/${selectedRoute}`), payload);
+        await set(ref(db, `busLocation/${routeKey}`), payload);
         startBtn.textContent = 'Start Sharing Location';
         startBtn.classList.remove('sharing');
         setStatus('Stopped', false);
@@ -1043,6 +1114,19 @@
           event.stopPropagation();
           showAssignmentModal(button.dataset.route);
         });
+      });
+
+      routeSelect.addEventListener('change', () => {
+        const nextRoute = routeSelect.value;
+        selectedRoute = nextRoute;
+        const info = routeMeta[nextRoute];
+        if (info) {
+          routeBadge.textContent = info.label;
+          assignmentTitle.textContent = `You are driving ${info.label}`;
+          routeScheduleText.textContent = info.schedule;
+          renderStopTimeline(info.stops);
+          setStatus(`You are driving ${info.label}`, true, false);
+        }
       });
 
       startBtn.addEventListener('click', startSharing);
@@ -1075,10 +1159,14 @@
         hideAssignmentModal();
       });
 
-      driverNameInput.addEventListener('keydown', (event) => {
+      assignmentDriverNameInput.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
           handleAssignmentConfirm();
         }
+      });
+
+      driverNameEntry.addEventListener('input', () => {
+        currentDriverName = driverNameEntry.value.trim();
       });
 
       openSettingsBtn.addEventListener('click', async () => {
@@ -1108,9 +1196,13 @@
         const latestAssignment = assignments[assignments.length - 1];
         selectedRoute = latestAssignment.routeKey;
         currentDriverName = latestAssignment.driverName || '';
+        driverNameEntry.value = currentDriverName;
+        routeSelect.value = selectedRoute;
         screenStack = ['login', 'selectBus', 'driverShare'];
         showSharingScreen(selectedRoute);
       } else {
+        driverNameEntry.value = '';
+        routeSelect.value = 'route1';
         screenStack = ['login', 'selectBus'];
         showRouteSelection();
       }
